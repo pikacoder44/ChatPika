@@ -1,0 +1,45 @@
+project-root/
+│── .env.local                # Environment variables (DB URL, API keys)
+│── package.json
+│── next.config.js
+│── tailwind.config.js
+│
+├── app/                      # Next.js App Router (pages if using Pages Router)
+│   ├── layout.tsx
+│   ├── page.tsx              # Landing page / homepage
+│   │
+│   ├── chat/                 # Chat-specific UI routes
+│   │   ├── page.tsx          # Chat list / dashboard
+│   │   ├── [chatId]/         # Dynamic route for chat detail
+│   │   │   └── page.tsx
+│   │
+│   └── api/                  # API routes (server-side logic)
+│       └── chats/
+│           ├── route.ts      # POST (new chat), GET (all chats for user)
+│           └── [id]/
+│               └── route.ts  # GET (single chat), PUT (update), DELETE
+│
+├── components/               # Reusable UI components
+│   ├── ChatWindow.tsx
+│   ├── ChatInput.tsx
+│   ├── MessageBubble.tsx
+│   └── Navbar.tsx
+│
+├── lib/                      # Helpers & utilities
+│   ├── db.ts                 # MongoDB connection (singleton)
+│   ├── validators.ts         # Zod or Yup schemas for input validation
+│   └── utils.ts              # General utilities
+│
+├── models/                   # Mongoose models
+│   └── Chat.ts
+│
+├── hooks/                    # Custom React hooks
+│   ├── useChat.ts            # Manages chat state
+│   └── useUser.ts            # Manages auth/user
+│
+├── styles/                   # Global styles
+│   └── globals.css
+│
+└── types/                    # TypeScript types/interfaces
+    ├── chat.d.ts
+    └── user.d.ts
