@@ -47,7 +47,9 @@ body,
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
 }
+
 
 :root {
   --radius: 0.625rem;
@@ -121,8 +123,10 @@ body,
 @layer base {
   * {
     @apply border-border outline-ring/50;
+   
   }
   body {
     @apply bg-background text-foreground;
   }
 }
+
