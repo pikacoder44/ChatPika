@@ -1,30 +1,27 @@
-import React, { useState } from "react";
+// components/ChatWindow.tsx
+import React from "react";
 
-const ChatWindow = (props) => {
-    let [userMessage,setuserMessage] = useState(props.user);
-
+const ChatWindow = ({ messages }) => {
   return (
-    <div className="w-[60%] mx-auto h-200 flex flex-col gap-3 p-3 ">
-      <div className="flex flex-col gap-3 p-3 ">
-        {props.sent && (
-          <div className="flex justify-end">
-            <div className="bg-blue-500 text-white px-4 py-2 rounded-xl max-w-[70%] break-words">
-              {userMessage}
-            </div>
+    <div className="w-[60%] mx-auto h-200 flex flex-col gap-3 p-3">
+      {messages.map((msg, index) => (
+        <div
+          key={index}
+          className={`flex ${
+            msg.role === "user" ? "justify-end" : "justify-start"
+          }`}
+        >
+          <div
+            className={`px-4 py-2 rounded-xl max-w-[70%] break-words ${
+              msg.role === "user"
+                ? "bg-blue-500 text-white"
+                : "bg-zinc-800 text-white"
+            }`}
+          >
+            {msg.role === "user" ? "User" : "AI"}: {msg.content}
           </div>
-        )}
-      </div>
-
-      <div>
-        {props.response && (
-            <div className="flex justify-start">
-          <div className="mt-4 p-3 w-auto h-auto rounded dark:text-white dark:bg-zinc-800">
-         
-             {props.response}
-          </div>
-          </div>
-        )}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
