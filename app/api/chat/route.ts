@@ -50,5 +50,5 @@ export async function POST(req: Request) {
 
   const result = await model.generateContent(message);
 
-  return NextResponse.json({ reply: result.response.text() });
+  return NextResponse.json({ response: result.response.text() });
 }

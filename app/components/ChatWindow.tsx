@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ChatWindow = (props) => {
   return (
-    <div>
-      <div className=" w-full h-200">
-        <div className="bg-gray-700 w-70 h-10 rounded-md text-center flex justify-center items-center"> {props.message}</div>
+    <div className="w-[60%] mx-auto h-200 flex flex-col gap-3 p-3 ">
+      <div className="flex flex-col gap-3 p-3 ">
+        {props.sent && (
+          <div className="flex justify-end">
+            <div className="bg-blue-500 text-white px-4 py-2 rounded-xl max-w-[70%] break-words">
+              {props.user}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div>
+        {props.response && (
+            <div className="flex justify-start">
+          <div className="mt-4 p-3 w-auto h-auto rounded dark:text-white dark:bg-zinc-800">
+         
+             {props.response}
+          </div>
+          </div>
+        )}
       </div>
     </div>
   );
