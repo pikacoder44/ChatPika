@@ -1,9 +1,9 @@
 // components/ChatWindow.tsx
-import React from "react";
+import ReactMarkdown from "react-markdown";
 
 const ChatWindow = ({ messages }) => {
   return (
-    <div className="w-[60%] mx-auto h-200 flex flex-col gap-3 p-3">
+    <div className="w-[60%] mx-auto h-200 flex flex-col gap-3 p-3 border rounded-md overflow-y-auto">
       {messages.map((msg, index) => (
         <div
           key={index}
@@ -18,7 +18,8 @@ const ChatWindow = ({ messages }) => {
                 : "bg-zinc-800 text-white"
             }`}
           >
-            {msg.role === "user" ? "User" : "AI"}: {msg.content}
+            {msg.role === "user" ? "User" : "AI"}:{" "}
+            <ReactMarkdown>{msg.content}</ReactMarkdown>
           </div>
         </div>
       ))}

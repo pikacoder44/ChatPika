@@ -19,45 +19,66 @@ export default function Chat() {
 
   const handleChat = async () => {
     setLoading(true);
-    setResponse("");
 
-    // Append in Message array:
+    // Add user message to chat
     const newMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
       content: message,
     };
-
-    // ---------------------------------------------
-
-    //    ⚠️ These are hardcoded lines - Remove them after testing:
     setMessages((prev) => [...prev, newMessage]);
-    const fakeResponse = "Hello! I'm your hardcoded AI 🤖"; // ⚠️ Delete it after testing
-    setMessages((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), role: "assistant", content: fakeResponse },
-    ]);
     setMessage("");
 
-    // -------------------------------------------------
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
-      const data = await res.json();
-      setResponse(data.response);
-      setSent(false); // ⚠️ Set it to true after testing
-      const fakeResponse = "Hello! I'm your hardcoded AI 🤖"; // ⚠️ Delete it after testing
+
+      if (!res.body) throw new Error("No response body");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      let assistantMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "",
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      // Read stream chunks
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+
+        assistantMessage = {
+          ...assistantMessage,
+          content: assistantMessage.content + chunk, // append chunk
+        };
+
+        // Update assistant's message in state
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessage.id ? assistantMessage : msg
+          )
+        );
+      }
+    } catch (error: any) {
+      console.error(error);
       setMessages((prev) => [
         ...prev,
-        { id: crypto.randomUUID(), role: "assistant", content: fakeResponse },
-      ]); // ⚠️ Set content to data.response after testing
-    } catch (error) {
-      setResponse("Error: " + error.message);
-      setSent(true); // ⚠️ Set it to false after testing
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: "Error: " + error.message,
+        },
+      ]);
     }
+
     setLoading(false);
   };
 
