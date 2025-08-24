@@ -3,9 +3,9 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 const ChatWindow = ({ messages }) => {
   return (
     <div className="flex-1 w-full flex justify-center">
-      <ScrollArea.Root className=" ScrollAreaRoot w-[70%] h-[850px] rounded-md overflow-hidden ">
+      <ScrollArea.Root className=" ScrollAreaRoot w-[100%] h-[850px] rounded-md overflow-hidden ">
         <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full p-3">
-          <div className="w-[80%] mx-auto h-[850px] flex flex-col gap-3 p-3  rounded-md ">
+          <div className="w-[80%] mx-auto  flex flex-col gap-3 p-3  rounded-md ">
             {messages.map((msg, index) => (
               <div
                 key={index}

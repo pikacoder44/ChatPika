@@ -149,30 +149,36 @@ body,
 }
 
 .ScrollAreaScrollbar {
-	display: flex;
-	/* ensures no selection */
-	user-select: none;
-	/* disable browser handling of all panning and zooming gestures on touch devices */
-	touch-action: none;
-	padding: 2px;
-	/* background: var(--black-a3); */
-	transition: background 160ms ease-out;
+  display: flex;
+  user-select: none;
+  touch-action: none;
+  padding: 2px;
+  background: transparent; /* hidden by default */
+  transition: background 160ms ease-out;
 }
+.ScrollAreaScrollbar:hover {
+  background: rgba(75, 85, 99, 0.5); /* semi-transparent gray, adjust as needed */
+}
+
 
 .ScrollAreaScrollbar[data-orientation="vertical"] {
 	width: var(--scrollbar-size);
 }
-.ScrollAreaScrollbar[data-orientation="horizontal"] {
-	flex-direction: column;
-	height: var(--scrollbar-size);
-}
+
 
 .ScrollAreaThumb {
-	flex: 1;
-	background: gray;
-	border-radius: 10px;
-	position: relative;
+  flex: 1; /* auto size */
+  background: rgb(57, 56, 56); /* visible color */
+  border-radius: 10px;
+  position: relative;
+
+  transition: background 160ms ease-in-out;
 }
+
+.ScrollAreaThumb:hover {
+  background: rgb(255, 255, 255); /* change color on hover */
+}
+
 /* increase target size for touch devices https://www.w3.org/WAI/WCAG21/Understanding/target-size.html */
 .ScrollAreaThumb::before {
 	content: "";
