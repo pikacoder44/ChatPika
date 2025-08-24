@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import ChatWindow from "@/components/ChatWindow";
+import WelcomeChat from "@/components/WelcomeChat";
 
 export default function Chat() {
   type Message = {
@@ -10,23 +11,21 @@ export default function Chat() {
   };
 
   const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
-  const [streaming, setStreaming] = useState("");
   const [loading, setLoading] = useState(false);
-  const [streamResponse, setStreamResponse] = useState("");
-  const [sent, setSent] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const handleChat = async () => {
+    if (!message.trim()) return;
+
     setLoading(true);
 
-    // Add user message to chat
-    const newMessage: Message = {
+    // Add user message
+    const userMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
       content: message,
     };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setMessage("");
 
     try {
@@ -41,29 +40,25 @@ export default function Chat() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
-      let assistantMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: "",
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      // Add empty assistant message once
+      const assistantId = crypto.randomUUID();
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "" },
+      ]);
 
-      // Read stream chunks
+      // Stream chunks
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
 
-        assistantMessage = {
-          ...assistantMessage,
-          content: assistantMessage.content + chunk, // append chunk
-        };
-
-        // Update assistant's message in state
         setMessages((prev) =>
           prev.map((msg) =>
-            msg.id === assistantMessage.id ? assistantMessage : msg
+            msg.id === assistantId
+              ? { ...msg, content: msg.content + chunk }
+              : msg
           )
         );
       }
@@ -83,8 +78,15 @@ export default function Chat() {
   };
 
   return (
-    <div className="p-2 w-full min-h-[989] flex flex-col  dark:bg-zinc-900 dark:text-white">
-      <ChatWindow messages={messages} />
+    <div className="p-2 w-full min-h-[989] flex flex-col justify-center gap-10 items-center  dark:bg-zinc-900 dark:text-white">
+      {messages.length === 0 ? (
+        <WelcomeChat />
+      ) : (
+        <div className="flex w-full justify-center">
+          <ChatWindow messages={messages} />
+        </div>
+      )}
+
       <div className="flex flex-row justify-center ">
         <div className="flex flex-row bg-zinc-700 rounded-lg p-2 w-auto m-2 justify-center gap-4 items-center">
           <textarea

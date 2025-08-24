@@ -195,3 +195,10 @@ body,
 .ScrollAreaCorner {
 	background: var(--black-a5);
 }
+
+.card{
+
+  
+  @apply flex cursor-pointer flex-col gap-2 rounded-xl border p-4 text-left transition-colors
+
+}
