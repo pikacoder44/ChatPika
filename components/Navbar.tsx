@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 const Navbar = () => {
   return (
-    <div className=" p-5 dark:bg-zinc-900 dark:text-white">
+    <div className=" p-5 dark:bg-zinc-900  dark:text-white">
       <nav className="flex justify-between  flex-row ">
         <Link href="/" className="hover:cursor-pointer">
           <h1 className=" font-bold text-4xl">ChatPika</h1>

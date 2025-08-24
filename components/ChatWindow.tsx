@@ -2,9 +2,9 @@ import ReactMarkdown from "react-markdown";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 const ChatWindow = ({ messages }) => {
   return (
-    <div className="flex-1 w-full flex justify-center">
-      <ScrollArea.Root className=" ScrollAreaRoot w-[100%] h-[850px] rounded-md overflow-hidden ">
-        <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full p-3">
+
+      <ScrollArea.Root className=" ScrollAreaRoot w-[100%] m-0 h-[850px] rounded-md overflow-hidden ">
+        <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full p-3 m-0">
           <div className="w-[80%] mx-auto  flex flex-col gap-3 p-3  rounded-md ">
             {messages.map((msg, index) => (
               <div
@@ -20,7 +20,7 @@ const ChatWindow = ({ messages }) => {
                       : "bg-zinc-800 text-white"
                   }`}
                 >
-                  {msg.role === "user" ? "User" : "AI"}:{" "}
+                  
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               </div>
@@ -38,7 +38,7 @@ const ChatWindow = ({ messages }) => {
 
         <ScrollArea.Corner className="ScrollAreaCorner bg-blue-500" />
       </ScrollArea.Root>
-    </div>
+
   );
 };
 
