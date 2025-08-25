@@ -1,13 +1,6 @@
 "use client";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+
+
 import CTA from "@/components/CallToAction";
 export default function Home() {
   
@@ -21,7 +14,6 @@ export default function Home() {
 
       <CTA/>
 
-      <h2 className="text-3xl mt-6 font-medium">Frequently Asked Questions</h2>
       
     </div>
   );
