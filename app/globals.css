@@ -86,7 +86,7 @@ body,
 
 .dark {
   --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
+  --foreground: oklch(65.24% 0.196 297.67);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
@@ -196,3 +196,6 @@ body,
   @apply flex cursor-pointer flex-col gap-2 rounded-xl border p-4 text-left transition-colors;
 }
 
+.main-nav li{
+  @apply opacity-70 hover:opacity-100
+}
