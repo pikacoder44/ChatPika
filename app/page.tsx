@@ -2,6 +2,7 @@
 
 import CTA from "@/components/CallToAction";
 import Features from "@/components/FeaturesSection";
+import Stats from "@/components/StatsSection";
 export default function Home() {
   return (
     <div className="p-6 w-full min-h-[989] flex flex-col items-center   dark:bg-zinc-900 dark:text-white">
@@ -12,6 +13,7 @@ export default function Home() {
       <CTA />
 
       <Features />
+      <Stats/>
     </div>
   );
 }
