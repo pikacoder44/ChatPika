@@ -39,7 +39,7 @@ const Navbar = () => {
             <ThemeToggle/>
           </li>
           <li>Sign In</li>
-          <li className="dark:bg-foreground p-2 rounded-md">Get Started</li>
+          <li className="dark:bg-foreground p-2 rounded-md dark:text-black">Get Started</li>
         </ul>
       </nav>
     </div>
