@@ -1,120 +1,81 @@
-interface MenuItem {
-  title: string;
-  links: {
-    text: string;
-    url: string;
-  }[];
-}
+import Link from "next/link";
 
-interface FooterProps {
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-  };
-  tagline?: string;
-  menuItems?: MenuItem[];
-  copyright?: string;
-  bottomLinks?: {
-    text: string;
-    url: string;
-  }[];
-}
-
-const Footer = ({
-  tagline = "Your Only Chatting App.",
-  menuItems = [
-    {
-      title: "Product",
-      links: [
-        { text: "Overview", url: "#" },
-        { text: "Pricing", url: "#" },
-        { text: "Marketplace", url: "#" },
-        { text: "Features", url: "#" },
-        { text: "Integrations", url: "#" },
-        { text: "Pricing", url: "#" },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { text: "About", url: "#" },
-        { text: "Team", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Contact", url: "#" },
-        { text: "Privacy", url: "#" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        { text: "Help", url: "#" },
-        { text: "Sales", url: "#" },
-        { text: "Advertise", url: "#" },
-      ],
-    },
-    {
-      title: "Social",
-      links: [
-        { text: "Twitter", url: "https://x.com/SyedHashir37382" },
-        { text: "Github", url: "https://github.com/pikacoder44" },
-        {
-          text: "LinkedIn",
-          url: "https://www.linkedin.com/in/syedmhashirali/",
-        },
-      ],
-    },
-  ],
-  copyright = "© 2025 Syed Hashir Ali - All rights reserved.",
-  bottomLinks = [
-    { text: "Terms and Conditions", url: "#" },
-    { text: "Privacy Policy", url: "#" },
-  ],
-}: FooterProps) => {
+const Footer = () => {
   return (
-    <section className="pt-32 w-full">
-      <div className="container flex flex-col items-center">
-        <footer className="w-full">
-          {/* grid wrapper */}
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6 justify-items-center">
-            <div className="col-span-2 mb-8 lg:mb-0 text-center lg:text-left">
-              <div className="flex items-center gap-2 justify-center lg:justify-start">
-                <h1 className="font-bold text-xl">ChatPika</h1>
-              </div>
-              <p className="mt-4 font-bold">{tagline}</p>
-            </div>
-            {menuItems.map((section, sectionIdx) => (
-              <div key={sectionIdx} className="text-center lg:text-left">
-                <h3 className="mb-4 font-bold">{section.title}</h3>
-                <ul className="text-muted-foreground space-y-4">
-                  {section.links.map((link, linkIdx) => (
-                    <li
-                      key={linkIdx}
-                      className="hover:text-primary font-medium"
-                    >
-                      <a href={link.url}>{link.text}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+    <section className="w-full pt-24">
+      <footer className="mx-auto w-full max-w-6xl px-6 text-center">
+        {/* Brand */}
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
+            ChatPika
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Your Only Chatting App.
+          </p>
+        </div>
 
-          {/* bottom bar */}
-          <div className="text-muted-foreground mt-24 flex flex-col justify-center items-center gap-4 border-t pt-8 text-sm font-medium md:flex-row md:justify-between">
-            <p>{copyright}</p>
-            <ul className="flex gap-4">
-              {bottomLinks.map((link, linkIdx) => (
-                <li key={linkIdx} className="hover:text-primary underline">
-                  <a href={link.url}>{link.text}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </footer>
-      </div>
+        {/* Primary links */}
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm font-medium">
+          <li className="hover:text-primary">
+            <Link href="/">Home</Link>
+          </li>
+          <li className="hover:text-primary">
+            <Link href="/pricing">Pricing</Link>
+          </li>
+          <li className="hover:text-primary">
+            <Link href="/chat">Chat</Link>
+          </li>
+        </ul>
+
+        {/* Socials */}
+        <ul className="mt-6 flex items-center justify-center gap-5 text-sm">
+          <li>
+            <a
+              className="text-muted-foreground hover:text-primary"
+              href="https://x.com/SyedHashir37382"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Twitter
+            </a>
+          </li>
+          <li>
+            <a
+              className="text-muted-foreground hover:text-primary"
+              href="https://github.com/pikacoder44"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Github
+            </a>
+          </li>
+          <li>
+            <a
+              className="text-muted-foreground hover:text-primary"
+              href="https://www.linkedin.com/in/syedmhashirali/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a
+              className="text-muted-foreground hover:text-primary"
+              href="mailto:hashiralibusiness@gmail.com"
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+
+        {/* Bottom bar */}
+        <div className="mt-10 border-t pt-6">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Syed Hashir Ali — All rights reserved.
+          </p>
+        </div>
+      </footer>
     </section>
   );
 };
