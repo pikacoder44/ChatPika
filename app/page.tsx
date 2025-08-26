@@ -2,6 +2,7 @@
 
 import CTA from "@/components/CallToAction";
 import Features from "@/components/FeaturesSection";
+import { Footer } from "@/components/Footer";
 import Stats from "@/components/StatsSection";
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
 
       <Features />
       <Stats/>
+      <Footer/>
     </div>
   );
 }
