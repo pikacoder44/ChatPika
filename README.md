@@ -1,102 +1,120 @@
-## ChatPika — Next.js AI Chat App
+## ✨ ChatPika — Next.js AI Chat App
 
-A modern AI chat app built with Next.js 15, React 19, Tailwind CSS v4, and Google’s Gemini API (streaming). Includes a styled homepage, a gradient pricing page, and a responsive chat UI with smooth scrolling and dark mode.
+A sleek AI chat app built with Next.js 15, React 19, Tailwind CSS v4, and Google’s Gemini API. Enjoy streaming responses, dark mode, and a modern gradient-inspired UI.
 
-### Features
-- **Streaming AI responses** using Gemini 1.5 Flash via a `/api/chat` endpoint
-- **Modern UI** with Tailwind CSS v4 and Radix ScrollArea
-- **Dark mode** via `next-themes` (system-aware)
-- **Responsive layouts** across devices
-- **Pages**:
-  - Home (hero, CTA, features, stats, footer)
-  - Pricing (Starter, Pro, Team tiers; Pro highlighted)
-  - Chat (live streaming conversation UI)
+### 🚀 Features
+- **⚡ Streaming AI replies** via `Gemini 1.5 Flash` (`/api/chat`)
+- **🎨 Modern UI** with Tailwind v4, gradients, and Radix ScrollArea
+- **🌓 Dark mode** powered by `next-themes` (system-aware)
+- **📱 Fully responsive** across devices
+- **🧭 Pages included**:
+  - **Home**: Hero, CTA, features, stats, footer
+  - **Pricing**: Starter / Pro / Team with highlighted Pro tier
+  - **Chat**: Live streaming conversation UI with Markdown support
 
-### Tech Stack
+### 🧱 Tech Stack
 - **Framework**: Next.js 15 (App Router), React 19
-- **Styling**: Tailwind CSS v4, custom CSS variables (`app/globals.css`)
+- **Styling**: Tailwind CSS v4 + custom tokens in `app/globals.css`
 - **AI**: `@google/generative-ai` (Gemini 1.5 Flash)
 - **Theming**: `next-themes`
 - **UI Utils**: `class-variance-authority`, `clsx`, `react-markdown`, Radix ScrollArea
 
-### Project Structure
+### 🗂️ Project Structure
 - `app/page.tsx` — Homepage
-- `app/pricing/page.tsx` — Pricing page
-- `app/chat/page.tsx` — Chat page (client component)
-- `app/api/chat/route.ts` — Streaming chat API (POST)
-- `components/Navbar.tsx`, `components/Footer.tsx`, `components/ThemeToggle.tsx`
-- `components/CallToAction.tsx` — CTA section
+- `app/pricing/page.tsx` — Pricing
+- `app/chat/page.tsx` — Chat (client component)
+- `app/api/chat/route.ts` — Streaming API (POST)
+- `components/Navbar.tsx` • `components/Footer.tsx` • `components/ThemeToggle.tsx`
+- `components/CallToAction.tsx` — CTA
 - `components/FeaturesSection.tsx` — Features grid
-- `components/StatsSection.tsx` — Stats section
-- `components/ChatWindow.tsx` — Scrollable chat transcript (Radix)
-- `components/WelcomeChat.tsx` — Quick-start suggestions
+- `components/StatsSection.tsx` — Stats
+- `components/ChatWindow.tsx` — Scrollable chat transcript
+- `components/WelcomeChat.tsx` — Quick-start tiles
 - `components/ui/button.tsx` — Button variants
-- `app/globals.css` — Tailwind + custom theme tokens
+- `app/globals.css` — Tailwind + theme tokens
 
-### Getting Started
+---
 
-#### Prerequisites
+### 🧰 Getting Started
+
+#### 1) Prerequisites
 - Node.js 18+ (20+ recommended)
 - A Google Gemini API key
 
-#### 1) Install
+#### 2) Install
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/pikacoder44/ChatPika
 cd ai-app-nextjs
-pnpm i   # or npm i / yarn
+npm i   
 ```
 
-#### 2) Environment
-Create `.env.local` in the project root:
+#### 3) Environment
+Create `.env.local`:
 ```bash
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-#### 3) Run (dev)
+#### 4) Run (Dev)
 ```bash
-pnpm dev    # or npm run dev / yarn dev
+npm run dev  
 # http://localhost:3000
 ```
 
-#### 4) Build & Start (prod)
+#### 5) Build & Start (Prod)
 ```bash
-pnpm build
-pnpm start
+npm build
+npm start
 ```
 
-### API
+---
+
+### 🔌 API Overview
 
 #### POST `/api/chat`
-- Request
+- **Request**:
 ```json
 { "message": "Your prompt here" }
 ```
-- Response: Streams text chunks of the model’s reply.
+- **Response**: Streams text chunks (for live typing effect)
 
-Implementation notes:
-- Uses `GoogleGenerativeAI` with `gemini-1.5-flash`
-- Streams via `ReadableStream` for live typing effect
+Under the hood:
+- Uses `GoogleGenerativeAI` with model `gemini-1.5-flash`
+- Streams via `ReadableStream` and flushes chunks to the client
 
-### Theming & Styling
-- Theme toggled via `ThemeProvider` (`attribute="class"`) and `ThemeToggle`.
-- Design tokens and Tailwind setup in `app/globals.css`.
-- Buttons/styles extendable via `components/ui/button.tsx`.
+---
 
-### Scripts
+### 🎨 Theming & Styling Tips
+- Toggle theme via `ThemeProvider` (`attribute="class"`) + `ThemeToggle`
+- Customize tokens in `app/globals.css` (colors, radii, borders)
+- Adjust button variants in `components/ui/button.tsx`
+- Page-level visuals in:
+  - `app/page.tsx` (hero/CTA background gradients)
+  - `app/pricing/page.tsx` (card gradients and emphasis)
+  - `app/chat/page.tsx` (chat layout)
+
+---
+
+### 🧪 Scripts
 - `dev` — Start dev server (Turbopack)
 - `build` — Production build
 - `start` — Run production server
 - `lint` — Run ESLint
 
-### Deployment
-- Works on Vercel or any Node host supporting Next.js 15.
-- Configure `GEMINI_API_KEY` in your hosting environment.
+---
 
-### Roadmap Ideas
-- Auth (NextAuth.js) and user sessions
-- Conversation history (DB)
-- File upload / multimodal prompts
-- Team workspaces and usage limits/billing
+### ☁️ Deployment
+- Works great on Vercel or any Node host supporting Next.js 15
+- Set `GEMINI_API_KEY` in your hosting environment variables
 
-### License
+---
+
+### 🛣️ Roadmap Ideas
+- 🔐 Auth (NextAuth.js) and user sessions
+- 💾 Conversation history (DB)
+- 🖼️ File upload / multimodal prompts
+- 👥 Team workspaces, usage limits, billing
+
+---
+
+### 📄 License
 MIT
