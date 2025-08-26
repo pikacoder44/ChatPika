@@ -15,10 +15,9 @@ const CTA = () => {
       </div>
       <Link href={"/chat"}>
         <Button
-          variant="default"
+          variant="cta"
           size="lg"
-          className="px-8 py-4 text-lg font-semibold rounded-xl mt-6 transition-all duration-200 ease-in-out 
-                   shadow-lg hover:cursor-pointer hover:text-white hover:bg-zinc-800 hover:scale-105 "
+          
         >
           Try ChatPik{" "}
           <svg
