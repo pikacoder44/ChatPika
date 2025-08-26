@@ -18,5 +18,5 @@ export default function Home() {
       <Stats/>
       <Footer/>
     </div>
-  );
+ );
 }
