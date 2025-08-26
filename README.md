@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## ChatPika — Next.js AI Chat App
 
-## Getting Started
+A modern AI chat app built with Next.js 15, React 19, Tailwind CSS v4, and Google’s Gemini API (streaming). Includes a styled homepage, a gradient pricing page, and a responsive chat UI with smooth scrolling and dark mode.
 
-First, run the development server:
+### Features
+- **Streaming AI responses** using Gemini 1.5 Flash via a `/api/chat` endpoint
+- **Modern UI** with Tailwind CSS v4 and Radix ScrollArea
+- **Dark mode** via `next-themes` (system-aware)
+- **Responsive layouts** across devices
+- **Pages**:
+  - Home (hero, CTA, features, stats, footer)
+  - Pricing (Starter, Pro, Team tiers; Pro highlighted)
+  - Chat (live streaming conversation UI)
 
+### Tech Stack
+- **Framework**: Next.js 15 (App Router), React 19
+- **Styling**: Tailwind CSS v4, custom CSS variables (`app/globals.css`)
+- **AI**: `@google/generative-ai` (Gemini 1.5 Flash)
+- **Theming**: `next-themes`
+- **UI Utils**: `class-variance-authority`, `clsx`, `react-markdown`, Radix ScrollArea
+
+### Project Structure
+- `app/page.tsx` — Homepage
+- `app/pricing/page.tsx` — Pricing page
+- `app/chat/page.tsx` — Chat page (client component)
+- `app/api/chat/route.ts` — Streaming chat API (POST)
+- `components/Navbar.tsx`, `components/Footer.tsx`, `components/ThemeToggle.tsx`
+- `components/CallToAction.tsx` — CTA section
+- `components/FeaturesSection.tsx` — Features grid
+- `components/StatsSection.tsx` — Stats section
+- `components/ChatWindow.tsx` — Scrollable chat transcript (Radix)
+- `components/WelcomeChat.tsx` — Quick-start suggestions
+- `components/ui/button.tsx` — Button variants
+- `app/globals.css` — Tailwind + custom theme tokens
+
+### Getting Started
+
+#### Prerequisites
+- Node.js 18+ (20+ recommended)
+- A Google Gemini API key
+
+#### 1) Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd ai-app-nextjs
+pnpm i   # or npm i / yarn
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 2) Environment
+Create `.env.local` in the project root:
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+#### 3) Run (dev)
+```bash
+pnpm dev    # or npm run dev / yarn dev
+# http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### 4) Build & Start (prod)
+```bash
+pnpm build
+pnpm start
+```
 
-## Learn More
+### API
 
-To learn more about Next.js, take a look at the following resources:
+#### POST `/api/chat`
+- Request
+```json
+{ "message": "Your prompt here" }
+```
+- Response: Streams text chunks of the model’s reply.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Implementation notes:
+- Uses `GoogleGenerativeAI` with `gemini-1.5-flash`
+- Streams via `ReadableStream` for live typing effect
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Theming & Styling
+- Theme toggled via `ThemeProvider` (`attribute="class"`) and `ThemeToggle`.
+- Design tokens and Tailwind setup in `app/globals.css`.
+- Buttons/styles extendable via `components/ui/button.tsx`.
 
-## Deploy on Vercel
+### Scripts
+- `dev` — Start dev server (Turbopack)
+- `build` — Production build
+- `start` — Run production server
+- `lint` — Run ESLint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Deployment
+- Works on Vercel or any Node host supporting Next.js 15.
+- Configure `GEMINI_API_KEY` in your hosting environment.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Roadmap Ideas
+- Auth (NextAuth.js) and user sessions
+- Conversation history (DB)
+- File upload / multimodal prompts
+- Team workspaces and usage limits/billing
+
+### License
+MIT
