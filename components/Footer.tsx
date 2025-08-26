@@ -1,5 +1,3 @@
-
-
 interface MenuItem {
   title: string;
   links: {
@@ -25,13 +23,7 @@ interface FooterProps {
 }
 
 const Footer = ({
-  logo = {
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg",
-    alt: "blocks for shadcn/ui",
-    title: "Shadcnblocks.com",
-    url: "https://www.shadcnblocks.com",
-  },
-  tagline = "Components made easy.",
+  tagline = "Your Only Chatting App.",
   menuItems = [
     {
       title: "Product",
@@ -66,31 +58,35 @@ const Footer = ({
     {
       title: "Social",
       links: [
-        { text: "Twitter", url: "#" },
-        { text: "Instagram", url: "#" },
-        { text: "LinkedIn", url: "#" },
+        { text: "Twitter", url: "https://x.com/SyedHashir37382" },
+        { text: "Github", url: "https://github.com/pikacoder44" },
+        {
+          text: "LinkedIn",
+          url: "https://www.linkedin.com/in/syedmhashirali/",
+        },
       ],
     },
   ],
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright = "© 2025 Syed Hashir Ali - All rights reserved.",
   bottomLinks = [
     { text: "Terms and Conditions", url: "#" },
     { text: "Privacy Policy", url: "#" },
   ],
 }: FooterProps) => {
   return (
-    <section className="py-32">
-      <div className="container">
-        <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-            <div className="col-span-2 mb-8 lg:mb-0">
-              <div className="flex items-center gap-2 lg:justify-start">
-                <h1>Logo</h1>
+    <section className="pt-32 w-full">
+      <div className="container flex flex-col items-center">
+        <footer className="w-full">
+          {/* grid wrapper */}
+          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6 justify-items-center">
+            <div className="col-span-2 mb-8 lg:mb-0 text-center lg:text-left">
+              <div className="flex items-center gap-2 justify-center lg:justify-start">
+                <h1 className="font-bold text-xl">ChatPika</h1>
               </div>
               <p className="mt-4 font-bold">{tagline}</p>
             </div>
             {menuItems.map((section, sectionIdx) => (
-              <div key={sectionIdx}>
+              <div key={sectionIdx} className="text-center lg:text-left">
                 <h3 className="mb-4 font-bold">{section.title}</h3>
                 <ul className="text-muted-foreground space-y-4">
                   {section.links.map((link, linkIdx) => (
@@ -105,7 +101,9 @@ const Footer = ({
               </div>
             ))}
           </div>
-          <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
+
+          {/* bottom bar */}
+          <div className="text-muted-foreground mt-24 flex flex-col justify-center items-center gap-4 border-t pt-8 text-sm font-medium md:flex-row md:justify-between">
             <p>{copyright}</p>
             <ul className="flex gap-4">
               {bottomLinks.map((link, linkIdx) => (
