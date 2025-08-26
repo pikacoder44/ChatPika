@@ -8,49 +8,49 @@ const Stats = () => {
           Our service statistics
         </h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-4 mt-4">
-          <div className="bg-white overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
+          <div className="bg-white overflow-hidden hover:-translate-0.5 dark:hover:bg-white cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
             <div className="px-4 py-5 sm:p-6">
               <dl>
-                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg">
+                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg ">
                   Total free servers
                 </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-white">
+                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-card-fg ">
                   1.6M
                 </dd>
               </dl>
             </div>
           </div>
-          <div className="bg-white overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
+          <div className="bg-white overflow-hidden hover:-translate-0.5 dark:hover:bg-white cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
             <div className="px-4 py-5 sm:p-6">
               <dl>
-                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg">
+                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg ">
                   Servers a month
                 </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-white">
+                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-card-fg ">
                   19.2K
                 </dd>
               </dl>
             </div>
           </div>
-          <div className="bg-white overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
+          <div className="bg-white overflow-hidden hover:-translate-0.5 dark:hover:bg-white cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
             <div className="px-4 py-5 sm:p-6">
               <dl>
-                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg">
+                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg ">
                   Servers a week
                 </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-white">
+                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-card-fg ">
                   4.9K
                 </dd>
               </dl>
             </div>
           </div>
-          <div className="bg-white overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
+          <div className="bg-white overflow-hidden hover:-translate-0.5 dark:hover:bg-white cursor-pointer transition-all ease-in-out shadow sm:rounded-lg dark:bg-card-bg">
             <div className="px-4 py-5 sm:p-6">
               <dl>
-                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg">
+                <dt className="text-sm leading-5 font-medium text-gray-500 truncate dark:text-card-fg ">
                   Total users
                 </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-white">
+                <dd className="mt-1 text-3xl leading-9 font-semibold text-indigo-600 dark:text-card-fg ">
                   166.7K
                 </dd>
               </dl>
