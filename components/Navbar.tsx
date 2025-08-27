@@ -38,8 +38,8 @@ const Navbar = () => {
           <li className="flex items-center">
             <ThemeToggle/>
           </li>
-          <li>Sign In</li>
-          <li className="dark:bg-foreground p-2 rounded-md dark:text-black">Get Started</li>
+          <Link href={"/signin"}><li>Sign In</li></Link>
+          <Link href={"/signup"}><li className="dark:bg-foreground p-2 rounded-md dark:text-black">Get Started</li></Link>
         </ul>
       </nav>
     </div>
