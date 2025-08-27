@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ContactPage() {
   return (
     <main className="relative w-full flex justify-center items-center">
@@ -13,30 +15,36 @@ export default function ContactPage() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl border p-5 cursor-pointer bg-white/60 dark:bg-zinc-900/40 text-center">
-            <h3 className="font-semibold text-slate-900 dark:text-white">
-              Email
-            </h3>
-            <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
-              hashiralibusiness@gmail.com
-            </p>
-          </div>
-          <div className="rounded-xl border p-5 cursor-pointer bg-white/60 dark:bg-zinc-900/40 text-center">
-            <h3 className="font-semibold text-slate-900 dark:text-white">
-              Twitter
-            </h3>
-            <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
-              @SyedHashir37382
-            </p>
-          </div>
-          <div className="rounded-xl border p-5 cursor-pointer bg-white/60 dark:bg-zinc-900/40 text-center">
-            <h3 className="font-semibold text-slate-900 dark:text-white">
-              GitHub
-            </h3>
-            <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
-              pikacoder44
-            </p>
-          </div>
+          <Link href={`mailto:hashiralibusiness@gmail.com`}>
+            <div className="rounded-xl border p-5 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5 bg-white/60 dark:bg-zinc-900/40 text-center">
+              <h3 className="font-semibold text-slate-900 dark:text-white">
+                Email
+              </h3>
+              <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
+                hashiralibusiness@gmail.com
+              </p>
+            </div>
+          </Link>
+          <Link href={`https://x.com/SyedHashir37382`} target="_blank">
+            <div className="rounded-xl border p-5 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5 bg-white/60 dark:bg-zinc-900/40 text-center">
+              <h3 className="font-semibold text-slate-900 dark:text-white">
+                Twitter
+              </h3>
+              <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
+                @SyedHashir37382
+              </p>
+            </div>
+          </Link>
+          <Link href={`https://github.com/pikacoder44`} target="_blank">
+            <div className="rounded-xl border p-5 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5 bg-white/60 dark:bg-zinc-900/40 text-center">
+              <h3 className="font-semibold text-slate-900 dark:text-white">
+                GitHub
+              </h3>
+              <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
+                pikacoder44
+              </p>
+            </div>
+          </Link>
         </div>
 
         <form className="mt-12 grid grid-cols-1 gap-4">

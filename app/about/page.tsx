@@ -12,7 +12,7 @@ export default function AboutPage() {
         </p>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40">
+          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5">
             <h3 className="font-semibold text-slate-900 dark:text-white">
               Fast
             </h3>
@@ -20,7 +20,7 @@ export default function AboutPage() {
               Streaming responses with a smooth, distraction-free UI.
             </p>
           </div>
-          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40">
+          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5">
             <h3 className="font-semibold text-slate-900 dark:text-white">
               Simple
             </h3>
@@ -28,7 +28,7 @@ export default function AboutPage() {
               Minimal design that puts your conversation first.
             </p>
           </div>
-          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40">
+          <div className="rounded-xl border p-5 bg-white/60 dark:bg-zinc-900/40 cursor-pointer transition-all duration-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:shadow-md hover:-translate-y-0.5">
             <h3 className="font-semibold text-slate-900 dark:text-white">
               Helpful
             </h3>
