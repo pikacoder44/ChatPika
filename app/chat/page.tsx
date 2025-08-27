@@ -86,7 +86,11 @@ export default function Chat() {
         </div>
       </div>
       {messages.length === 0 ? (
-        <WelcomeChat />
+        <WelcomeChat
+          onPick={(m) => {
+            setMessage(m);
+          }}
+        />
       ) : (
         <div className="flex w-full justify-center">
           <ChatWindow messages={messages} />
@@ -139,7 +143,7 @@ export default function Chat() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="white"
-                className="size-10 mr-3"
+                className="size-10 mr-3 cursor-pointer"
               >
                 <path
                   fillRule="evenodd"
