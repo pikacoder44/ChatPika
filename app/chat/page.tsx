@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Chat() {
   type Message = {
@@ -79,6 +80,11 @@ export default function Chat() {
 
   return (
     <div className="p-2 w-full min-h-[989] flex flex-col justify-center gap-10 items-center  dark:bg-zinc-900 dark:text-white">
+      <div className="self-stretch">
+        <div className="relative mt-[-10px] z-10">
+          <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 backdrop-blur shadow-lg" />
+        </div>
+      </div>
       {messages.length === 0 ? (
         <WelcomeChat />
       ) : (
