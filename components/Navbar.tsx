@@ -2,6 +2,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 const Navbar = () => {
   const [mode, setMode] = useState("");
 
@@ -36,10 +43,21 @@ const Navbar = () => {
         {/* Login  */}
         <ul className="flex flex-row justify-between items-center gap-4">
           <li className="flex items-center">
-            <ThemeToggle/>
+            <ThemeToggle />
           </li>
-          <Link href={"/signin"}><li>Sign In</li></Link>
-          <Link href={"/signup"}><li className="dark:bg-foreground p-2 rounded-md dark:text-black">Get Started</li></Link>
+          <header className="flex justify-end items-center p-4 gap-4 h-16">
+            <SignedOut>
+              <SignInButton className=" hover:text-green-500 cursor-pointer" />
+              <SignUpButton>
+                <button className="bg-[#13d75e] hover:bg-[#342b54] hover:text-white text-black rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                  Get Started
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton  />
+            </SignedIn>
+          </header>
         </ul>
       </nav>
     </div>
