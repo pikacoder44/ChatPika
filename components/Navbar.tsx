@@ -55,7 +55,9 @@ const Navbar = () => {
               </SignUpButton>
             </SignedOut>
             <SignedIn>
-              <UserButton  />
+              <div className="[&_.cl-userButtonTrigger]:!h-16 [&_.cl-userButtonTrigger]:!w-16 [&_.cl-userButtonAvatarBox]:!h-12 [&_.cl-userButtonAvatarBox]:!w-12">
+                <UserButton />
+              </div>
             </SignedIn>
           </header>
         </ul>
