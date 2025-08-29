@@ -1,8 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useUser } from "@clerk/nextjs";
+
+/*
+🔑 What we need to change
+
+Detect if a user is logged in (via Clerk).
+
+If logged in → make sure a chat exists in DB and send chatId to backend.
+
+If not logged in → just send message (no chatId → backend treats as guest).
+
+*/
 
 export default function Chat() {
   type Message = {
@@ -14,6 +26,22 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  //Detect if a user is logged in (via Clerk).
+  const { user, isSignedIn } = useUser(); // Clerk State
+  const [chatId, setChatId] = useState<string | null>(null);
+  // Create a chat in DB for logged-in users
+  useEffect(() => {
+    if (isSignedIn && !chatId) {
+      fetch("/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "New Chat" }),
+      })
+        .then((res) => res.json())
+        .then((chat) => setChatId(chat._id));
+    }
+  }, [isSignedIn, chatId]);
 
   const handleChat = async () => {
     if (!message.trim()) return;
@@ -33,7 +61,10 @@ export default function Chat() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({
+          message,
+          chatId: isSignedIn ? chatId : undefined,
+        }),
       });
 
       if (!res.body) throw new Error("No response body");
@@ -48,6 +79,7 @@ export default function Chat() {
         { id: assistantId, role: "assistant", content: "" },
       ]);
 
+      console.log("Chat ID: ", chatId);
       // Stream chunks
       while (true) {
         const { done, value } = await reader.read();
