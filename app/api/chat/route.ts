@@ -60,7 +60,9 @@ export async function POST(req: Request) {
       if (dbUser && chatId) {
         await Chat.updateOne(
           { _id: chatId, userId: dbUser.clerkId },
-          { $push: { messages: { role: "assistant", content: assistantReply } } }
+          {
+            $push: { messages: { role: "assistant", content: assistantReply } },
+          }
         );
       }
 
