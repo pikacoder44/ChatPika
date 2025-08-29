@@ -5,16 +5,6 @@ import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 
-/*
-🔑 What we need to change
-
-Detect if a user is logged in (via Clerk).
-
-If logged in → make sure a chat exists in DB and send chatId to backend.
-
-If not logged in → just send message (no chatId → backend treats as guest).
-
-*/
 
 export default function Chat() {
   type Message = {

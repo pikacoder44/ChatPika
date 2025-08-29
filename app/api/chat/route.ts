@@ -8,7 +8,6 @@ import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import Chat from "@/lib/models/Chat";
-import Message from "@/lib/models/Message";
 
 export async function POST(req: Request) {
   await connectDB();
