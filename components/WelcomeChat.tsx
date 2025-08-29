@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-
+import { useUser } from "@clerk/nextjs";
 type WelcomeChatProps = {
   onPick?: (message: string) => void;
 };
@@ -20,10 +20,12 @@ const WelcomeChat = ({ onPick }: WelcomeChatProps) => {
       console.log("Picked message:", message);
     }
   };
-
+  const {user} = useUser();
   return (
     <div className="mx-auto flex w-full flex-col justify-center px-2 pb-2 transition-all duration-700 max-w-3xl flex-1">
       <div className="flex flex-col items-center justify-center pb-4 text-center">
+    
+        <h1 className=" text-3xl font-bold">Hi {user?.firstName}</h1>
         <h1 className="mb-6 text-3xl font-bold">What can I help with?</h1>
         <div className="grid w-full auto-rows-min gap-4 md:grid-cols-3">
           <button onClick={() => handlePick(messages[0])}>
