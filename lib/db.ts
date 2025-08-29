@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 export async function connectDB() {
   const mongodb = process.env.MONGODB_URL_LOCAL as string;
+  if (!mongodb) {
+    throw new Error("Please define the MONGODB_URI in .env.local");
+  }
+
   try {
     let conn = await mongoose.connect(mongodb);
     return conn;
