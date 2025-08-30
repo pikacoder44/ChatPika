@@ -21,10 +21,10 @@ const Navbar = () => {
     console.log(mode);
   };
   return (
-    <div className=" p-5 dark:bg-zinc-900  dark:text-white w-full">
+    <div className=" p-3 dark:bg-zinc-900  dark:text-white w-full">
       <nav className="navbar flex justify-between  flex-row ">
         <Link href="/" className="hover:cursor-pointer">
-          <h1 className=" font-bold text-4xl mr-10">ChatPika</h1>
+          <h1 className=" font-bold text-4xl mr-10 text-center">ChatPika</h1>
         </Link>
         <ul className="main-nav flex flex-row justify-between cursor-pointer">
           <Link href={"/"}>
