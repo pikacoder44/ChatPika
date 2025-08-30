@@ -24,21 +24,29 @@ export default function Chat() {
     if (isSignedIn) {
       // Check if there's an existing chat in localStorage
       const existingChatId = localStorage.getItem("chatId");
-
+      console.log("Existing chatId from localStorage:", existingChatId);
       if (existingChatId) {
         // Restore existing chat
         setChatId(existingChatId);
+        console.log("Restored chatId:", existingChatId);
         // TODO: Fetch existing messages for this chat
-      } else {
-        fetch("/api/chats", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: "New Chat", chatId: null }),
-        })
-          .then((res) => res.json())
-          .then((chat) => setChatId(chat._id));
-        localStorage.setItem("chatId", chat._id);
       }
+      localStorage.removeItem("chatId");
+      console.log("Creating new chat...");
+      fetch("/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "New Chat", chatId: null }),
+      })
+        .then((res) => res.json())
+        .then((chat) => {
+          console.log("New chat created:", chat);
+          setChatId(chat._id);
+          localStorage.setItem("chatId", chat._id); // Move this INSIDE the .then()
+        })
+        .catch((error) => {
+          console.error("Error creating chat:", error);
+        });
     }
   }, [isSignedIn]);
 
