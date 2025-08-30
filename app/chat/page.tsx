@@ -27,7 +27,10 @@ const ChatPage = () => {
       if (response.ok) {
         const chat = await response.json();
         router.push(`/chat/${chat._id}`);
-      } else {
+      }else if(response.status === 401 ){
+        alert("Unauthorized! Please Login to continue")
+      }
+       else {
         throw new Error("Failed to create chat");
       }
     } catch (error) {
@@ -50,8 +53,6 @@ const ChatPage = () => {
 
   return (
     <div className=" bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900">
-  
-
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center flex-1 px-6 py-16">
         <div className="max-w-4xl w-full text-center">
