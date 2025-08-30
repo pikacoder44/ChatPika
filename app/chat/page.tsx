@@ -20,35 +20,59 @@ export default function Chat() {
   const { user, isSignedIn } = useUser(); // Clerk State
   const [chatId, setChatId] = useState<string | null>(null);
   // Create a chat in DB for logged-in users
+  // ... existing code ...
   useEffect(() => {
     if (isSignedIn) {
-      // Check if there's an existing chat in localStorage
       const existingChatId = localStorage.getItem("chatId");
       console.log("Existing chatId from localStorage:", existingChatId);
+
       if (existingChatId) {
-        // Restore existing chat
-        setChatId(existingChatId);
-        console.log("Restored chatId:", existingChatId);
-        // TODO: Fetch existing messages for this chat
+        // First, verify this chat actually exists in the database
+        fetch(`/api/chats/${existingChatId}`)
+          .then((res) => {
+            if (res.ok) {
+              // Chat exists, restore it
+              console.log("Chat exists, restoring:", existingChatId);
+              setChatId(existingChatId);
+            } else {
+              // Chat doesn't exist, remove from localStorage and create new one
+              console.log("Chat doesn't exist, creating new one");
+              localStorage.removeItem("chatId");
+              createNewChat();
+            }
+          })
+          .catch(() => {
+            // Error occurred, create new chat
+            console.log("Error checking chat, creating new one");
+            localStorage.removeItem("chatId");
+            createNewChat();
+          });
+      } else {
+        // No existing chat, create new one
+        console.log("No existing chat, creating new chat...");
+        createNewChat();
       }
-      localStorage.removeItem("chatId");
-      console.log("Creating new chat...");
-      fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Chat", chatId: null }),
-      })
-        .then((res) => res.json())
-        .then((chat) => {
-          console.log("New chat created:", chat);
-          setChatId(chat._id);
-          localStorage.setItem("chatId", chat._id); // Move this INSIDE the .then()
-        })
-        .catch((error) => {
-          console.error("Error creating chat:", error);
-        });
     }
   }, [isSignedIn]);
+
+  // Helper function to create new chat
+  const createNewChat = () => {
+    fetch("/api/chats", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "New Chat" }),
+    })
+      .then((res) => res.json())
+      .then((chat) => {
+        console.log("New chat created:", chat);
+        setChatId(chat._id);
+        localStorage.setItem("chatId", chat._id);
+      })
+      .catch((error) => {
+        console.error("Error creating chat:", error);
+      });
+  };
+  // ... existing code ...
 
   const handleChat = async () => {
     if (!message.trim()) return;
