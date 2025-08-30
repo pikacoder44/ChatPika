@@ -1,11 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 
-export default function Chat() {
+export default function Chat({ params }) {
   type Message = {
     id: string;
     role: "user" | "assistant";
@@ -18,42 +18,7 @@ export default function Chat() {
 
   //Detect if a user is logged in (via Clerk).
   const { user, isSignedIn } = useUser(); // Clerk State
-  const [chatId, setChatId] = useState<string | null>(null);
-  // Create a chat in DB for logged-in users
-  // ... existing code ...
-  useEffect(() => {
-    if (isSignedIn) {
-      const existingChatId = localStorage.getItem("chatId");
-      console.log("Existing chatId from localStorage:", existingChatId);
-
-      if (existingChatId) {
-        // First, verify this chat actually exists in the database
-        fetch(`/api/chats/${existingChatId}`)
-          .then((res) => {
-            if (res.ok) {
-              // Chat exists, restore it
-              console.log("Chat exists, restoring:", existingChatId);
-              setChatId(existingChatId);
-            } else {
-              // Chat doesn't exist, remove from localStorage and create new one
-              console.log("Chat doesn't exist, creating new one");
-              localStorage.removeItem("chatId");
-              createNewChat();
-            }
-          })
-          .catch(() => {
-            // Error occurred, create new chat
-            console.log("Error checking chat, creating new one");
-            localStorage.removeItem("chatId");
-            createNewChat();
-          });
-      } else {
-        // No existing chat, create new one
-        console.log("No existing chat, creating new chat...");
-        createNewChat();
-      }
-    }
-  }, [isSignedIn]);
+  const { chatId } = use(params);
 
   // Helper function to create new chat
   const createNewChat = () => {
@@ -65,8 +30,7 @@ export default function Chat() {
       .then((res) => res.json())
       .then((chat) => {
         console.log("New chat created:", chat);
-        setChatId(chat._id);
-        localStorage.setItem("chatId", chat._id);
+        localStorage.setItem("chatId", chatId);
       })
       .catch((error) => {
         console.error("Error creating chat:", error);
@@ -89,7 +53,7 @@ export default function Chat() {
     setMessage("");
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

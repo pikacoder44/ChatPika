@@ -35,8 +35,7 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.error("Error creating chat:", error);
-      // Fallback to a simple route if API fails
-      router.push("/chat/new");
+    
     } finally {
       setIsCreating(false);
     }
