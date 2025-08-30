@@ -22,11 +22,11 @@ export default function Chat() {
   const [chatId, setChatId] = useState<string | null>(null);
   // Create a chat in DB for logged-in users
   useEffect(() => {
-    if (isSignedIn && !chatId) {
+    if (isSignedIn && chatId===null) {
       fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Chat" }),
+        body: JSON.stringify({ title: "New Chat",chatId: chatId }),
       })
         .then((res) => res.json())
         .then((chat) => setChatId(chat._id));

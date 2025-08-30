@@ -8,7 +8,8 @@ export async function POST(req: Request) {
   try {
     await connectDB();
     const user = await currentUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     let dbUser = await User.findOne({ clerkId: user.id });
     if (!dbUser) {
@@ -19,14 +20,15 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { title } = body;
+    const { title, chatId } = body;
+
+    // Apply condition here to check +New Chat buton click
 
     const chat = await Chat.create({
       userId: dbUser.clerkId,
       title,
       messages: [],
     });
-
     return NextResponse.json(chat);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -37,7 +39,8 @@ export async function GET() {
   try {
     await connectDB();
     const user = await currentUser();
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const dbUser = await User.findOne({ clerkId: user.id });
     if (!dbUser) return NextResponse.json([]);

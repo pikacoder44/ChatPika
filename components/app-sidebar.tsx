@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+"use client";
+import { Home, Search, Plus } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
 
 // Menu items.
 const items = [
@@ -27,6 +29,43 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const [chats, setChats] = useState<any[]>([]);
+  // Fetch chats
+  useEffect(() => {
+    let getChats = async () => {
+      try {
+        let result = await fetch("/api/chats", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        let data = await result.json();
+        console.log(data);
+        setChats(data);
+      } catch (error) {
+        console.error("Failed to fetch chats:", error);
+      }
+    };
+    getChats();
+  }, []);
+
+  // Create new chat
+  const handleNewChat = async () => {
+    try {
+      const result = await fetch("/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: `Chat ${chats.length + 1}` }),
+      });
+      const newChat = await result.json();
+      setChats((prev) => [newChat, ...prev]);
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+    }
+  };
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -34,6 +73,12 @@ export function AppSidebar() {
           <SidebarGroupLabel>Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleNewChat}>
+                  <Plus />
+                  <span>New Chat</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
