@@ -5,7 +5,6 @@ import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 
-
 export default function Chat() {
   type Message = {
     id: string;
@@ -22,16 +21,26 @@ export default function Chat() {
   const [chatId, setChatId] = useState<string | null>(null);
   // Create a chat in DB for logged-in users
   useEffect(() => {
-    if (isSignedIn && chatId===null) {
-      fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Chat",chatId: chatId }),
-      })
-        .then((res) => res.json())
-        .then((chat) => setChatId(chat._id));
+    if (isSignedIn) {
+      // Check if there's an existing chat in localStorage
+      const existingChatId = localStorage.getItem("chatId");
+
+      if (existingChatId) {
+        // Restore existing chat
+        setChatId(existingChatId);
+        // TODO: Fetch existing messages for this chat
+      } else {
+        fetch("/api/chats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: "New Chat", chatId: null }),
+        })
+          .then((res) => res.json())
+          .then((chat) => setChatId(chat._id));
+        localStorage.setItem("chatId", chat._id);
+      }
     }
-  }, [isSignedIn, chatId]);
+  }, [isSignedIn]);
 
   const handleChat = async () => {
     if (!message.trim()) return;
