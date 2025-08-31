@@ -35,8 +35,9 @@ export default function RootLayout({ children }) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Navbar />
-
+            <main className="pt-16"> {/* pt matches navbar height */}
             {children}
+            </main>
           </ThemeProvider>
         </body>
       </html>

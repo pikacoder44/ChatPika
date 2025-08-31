@@ -7,9 +7,9 @@ import { AppSidebar } from "@/components/app-sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="fixed z-[100]">
       <AppSidebar />
-      <SidebarInset className="min-h-[989px]">{children}</SidebarInset>
+      <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
 }
