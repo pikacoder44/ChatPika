@@ -1,12 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
-import { NextResponse } from "next/server"; // Add this import
+import { NextResponse } from "next/server"; 
 
 import User from "@/lib/models/User";
 import Chat from "@/lib/models/Chat";
 
-// ... existing code ...
+
 export async function POST(req: Request) {
   try {
     await connectDB();

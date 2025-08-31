@@ -5,12 +5,14 @@ import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
+import { useRouter } from 'next/navigation';
 export default function Chat() {
   type Message = {
     id: string;
     role: "user" | "assistant";
     content: string;
   };
+  const router = useRouter();
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,12 +40,29 @@ export default function Chat() {
           content: msg.content,
         }))
       );
-
-      console.log("Incomming Messages: ", chat.messages);
     };
+
+   
 
     dbDataLoad();
   }, [chatId]);
+
+  useEffect(() => {
+    const updateTitle = async () => {
+      let response = await fetch("/api/ai/generatetitle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: messages,chatId:chatId }),
+      });
+      if(response.ok){
+        console.log("Done: ",response)
+        router.refresh();
+      }
+    };
+    if (messages.length === 2) {
+      updateTitle();
+    }
+  }, [messages,chatId,router]);
 
   // Helper function to create new chat
   const createNewChat = () => {
