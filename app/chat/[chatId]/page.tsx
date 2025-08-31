@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -22,7 +22,6 @@ export default function Chat() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-
   const chatId = params.chatId as string;
   const prompt = searchParams.get("prompt");
   useEffect(() => {
@@ -42,6 +41,7 @@ export default function Chat() {
 
       console.log("Incomming Messages: ", chat.messages);
     };
+
     dbDataLoad();
   }, [chatId]);
 
@@ -62,7 +62,7 @@ export default function Chat() {
       });
   };
 
-  const handleChat = useCallback( async () => {
+  const handleChat = async () => {
     if (!message.trim()) return;
 
     setLoading(true);
@@ -75,13 +75,13 @@ export default function Chat() {
     };
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
-    console.log("Prompt: ",prompt)
+    console.log("Prompt: ", prompt);
     try {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message:prompt?prompt:message,
+          message,
           chatId: isSignedIn ? chatId : undefined,
         }),
       });
@@ -127,19 +127,7 @@ export default function Chat() {
     }
 
     setLoading(false);
-  },[chatId,isSignedIn,message,prompt])
-
-  const hasSentPromptRef = useRef(false);
-
-useEffect(() => {
-  if (!hasSentPromptRef.current && prompt && messages.length === 0) {
-    hasSentPromptRef.current = true;
-    setMessage(prompt);
-    handleChat()
-  }
-}, [prompt, messages.length, handleChat]);
-
-  
+  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full dark:bg-zinc-900 dark:text-white">
