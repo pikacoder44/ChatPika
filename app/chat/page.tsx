@@ -10,48 +10,80 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SidebarTrigger, SidebarProvider } from "@/components/ui/sidebar";
-
+import { useUser } from "@clerk/nextjs";
 const ChatPage = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
-
-  const handleNewChat = async (prompt) => {
+  const [recentChats, setRecentChats] = useState<any[]>([]);
+  const handleNewChat = async () => {
     setIsCreating(true);
-    console.log(prompt)
+    console.log(prompt);
     try {
       const response = await fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Chat"}),
+        body: JSON.stringify({ title: "New Chat" }),
       });
 
       if (response.ok) {
         const chat = await response.json();
 
-        router.push(`/chat/${chat._id}?prompt=${encodeURIComponent(prompt)}`);
-
-      }else if(response.status === 401 ){
-        alert("Unauthorized! Please Login to continue")
-      }
-       else {
+        router.push(`/chat/${chat._id}`);
+      } else if (response.status === 401) {
+        alert("Unauthorized! Please Login to continue");
+      } else {
         throw new Error("Failed to create chat");
       }
     } catch (error) {
       console.error("Error creating chat:", error);
-    
     } finally {
       setIsCreating(false);
     }
   };
+  const { user, isSignedIn } = useUser(); // Clerk State
 
-  const quickStartPrompts = [
-    "Explain quantum computing in simple terms",
-    "Write a Python function to sort a list",
-    "Help me plan a weekend trip",
-    "Explain the benefits of meditation",
-    "Write a creative story about time travel",
-    "Help me understand machine learning basics",
-  ];
+  useEffect(() => {
+    const getRecentChats = async () => {
+      try {
+        let result = await fetch("/api/chats", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        let data = await result.json();
+
+        setRecentChats(data);
+      } catch (error) {
+        console.error("Failed to fetch chats:", error);
+      }
+    };
+    if (isSignedIn) {
+      console.log("Signed In");
+      getRecentChats();
+    }
+  }, [isSignedIn]);
+
+
+  const openChat = async (id) => {
+    let response;
+    try {
+      response = await fetch(`/api/chats/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      let chat = await response.json();
+      if(response.ok){
+       
+        router.push(`/chat/${id}`);
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      // console.log(chat);
+    }
+  };
 
   return (
     <div className=" bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900">
@@ -97,31 +129,34 @@ const ChatPage = () => {
           {/* Quick Start Prompts */}
           <div className="mb-12">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
-              Quick Start Ideas
+              Recent Chats
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {quickStartPrompts.map((prompt, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                   
-                    handleNewChat(prompt);
-                  }}
-                  className="group p-4 text-left bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                      <Sparkles className="h-4 w-4 text-white" />
+            {recentChats.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                {recentChats.map((item) => (
+                  <button
+                    key={item._id}
+                    onClick={() => openChat(item._id)}
+                    className="group p-4 text-left bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                        <Sparkles className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+                          {item.title}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
-                        {prompt}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <h1 className="text-gray-600 p-20">
+                No Recent Chats, Start a New One
+              </h1>
+            )}
           </div>
 
           {/* Features */}
