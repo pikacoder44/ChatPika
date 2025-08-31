@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title } = body;
 
+  
     const chat = await Chat.create({
       userId: dbUser.clerkId,
       title,

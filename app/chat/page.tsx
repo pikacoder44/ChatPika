@@ -15,18 +15,21 @@ const ChatPage = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleNewChat = async () => {
+  const handleNewChat = async (prompt) => {
     setIsCreating(true);
+    console.log(prompt)
     try {
       const response = await fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "New Chat" }),
+        body: JSON.stringify({ title: "New Chat"}),
       });
 
       if (response.ok) {
         const chat = await response.json();
-        router.push(`/chat/${chat._id}`);
+
+        router.push(`/chat/${chat._id}?prompt=${encodeURIComponent(prompt)}`);
+
       }else if(response.status === 401 ){
         alert("Unauthorized! Please Login to continue")
       }
@@ -101,9 +104,8 @@ const ChatPage = () => {
                 <button
                   key={index}
                   onClick={() => {
-                    // Store the prompt and redirect to new chat
-                    localStorage.setItem("quickStartPrompt", prompt);
-                    handleNewChat();
+                   
+                    handleNewChat(prompt);
                   }}
                   className="group p-4 text-left bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
                 >
