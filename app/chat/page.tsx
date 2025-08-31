@@ -14,6 +14,7 @@ import { useUser } from "@clerk/nextjs";
 const ChatPage = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [recentChats, setRecentChats] = useState<any[]>([]);
   const handleNewChat = async () => {
     setIsCreating(true);
@@ -44,6 +45,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     const getRecentChats = async () => {
+      setLoading(true);
       try {
         let result = await fetch("/api/chats", {
           method: "GET",
@@ -57,6 +59,8 @@ const ChatPage = () => {
         setRecentChats(data);
       } catch (error) {
         console.error("Failed to fetch chats:", error);
+      } finally {
+        setLoading(false);
       }
     };
     if (isSignedIn) {
@@ -64,7 +68,6 @@ const ChatPage = () => {
       getRecentChats();
     }
   }, [isSignedIn]);
-
 
   const openChat = async (id) => {
     let response;
@@ -74,8 +77,7 @@ const ChatPage = () => {
         headers: { "Content-Type": "application/json" },
       });
       let chat = await response.json();
-      if(response.ok){
-       
+      if (response.ok) {
         router.push(`/chat/${id}`);
       }
     } catch (error) {
@@ -131,7 +133,13 @@ const ChatPage = () => {
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
               Recent Chats
             </h2>
-            {recentChats.length > 0 ? (
+
+            {loading ? (
+              // Spinner when loading
+              <div className="flex justify-center items-center py-20">
+                <div className="w-10 h-10 border-4 border-gray-900 border-t-amber-300 rounded-full animate-spin" />
+              </div>
+            ) : recentChats.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
                 {recentChats.map((item) => (
                   <button
