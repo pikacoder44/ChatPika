@@ -19,6 +19,26 @@ export default function Chat({ params }) {
   //Detect if a user is logged in (via Clerk).
   const { user, isSignedIn } = useUser(); // Clerk State
   const { chatId } = use(params);
+  useEffect(() => {
+    let dbDataLoad = async () => {
+      let response = await fetch(`/api/chats/${chatId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      let chat = await response.json();
+      setMessages(
+        chat.messages.map((msg: any) => ({
+          id: msg._id,
+          role: msg.role,
+          content: msg.content,
+        }))
+      );
+      
+
+      console.log("Incomming Messages: ", chat.messages);
+    };
+    dbDataLoad();
+  }, [chatId]);
 
   // Helper function to create new chat
   const createNewChat = () => {

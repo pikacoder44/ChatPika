@@ -63,7 +63,7 @@ export function AppSidebar() {
         });
 
         let data = await result.json();
-        console.log(data);
+ 
         setChats(data);
       } catch (error) {
         console.error("Failed to fetch chats:", error);
