@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Menu items.
 const items = [
@@ -29,7 +30,27 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const router = useRouter();
   const [chats, setChats] = useState<any[]>([]);
+
+  const openChat = async (id) => {
+    let response;
+    try {
+      response = await fetch(`/api/chats/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      let chat = await response.json();
+      if(response.ok){
+       
+        router.push(`/chat/${id}`);
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      // console.log(chat);
+    }
+  };
   // Fetch chats
   useEffect(() => {
     let getChats = async () => {
@@ -97,13 +118,12 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Will Change it later to a real chat list */}
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              {chats.map((item) => (
+                <SidebarMenuItem key={item._id}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
+                    <button onClick={() => openChat(item._id)}>
                       <span>{item.title}</span>
-                    </a>
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/db";
 import Chat from "@/lib/models/Chat";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, params: Promise<{ chatId: string }>) {
+export async function GET(req: Request,   { params }: { params: { chatId: string } }) {
   try {
     const { chatId } = await params;
     await connectDB();
