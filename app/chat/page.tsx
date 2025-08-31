@@ -137,7 +137,7 @@ const ChatPage = () => {
             {loading ? (
               // Spinner when loading
               <div className="flex justify-center items-center py-20">
-                <div className="w-10 h-10 border-4 border-gray-900 border-t-amber-300 rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-gray-100 border-t-purple-800  dark:border-gray-900 dark:border-t-amber-300 rounded-full animate-spin" />
               </div>
             ) : recentChats.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
@@ -145,7 +145,7 @@ const ChatPage = () => {
                   <button
                     key={item._id}
                     onClick={() => openChat(item._id)}
-                    className="group p-4 text-left bg-white/60 dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
+                    className="group p-4 text-left bg-white/60 shadow dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">

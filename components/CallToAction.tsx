@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 const CTA = () => {
   return (
-    <div className="relative overflow-hidden dark:bg-card-bg p-8 m-8 rounded-2xl shadow-lg flex flex-row items-center justify-between hover:bg-amber-400 cursor-default hover:scale-105 transition-all  ease-in-out">
+    <div className="relative overflow-hidden dark:bg-card-bg p-8 m-8 rounded-2xl shadow-lg flex flex-row items-center justify-between hover:bg-zinc-800 hover:text-white cursor-pointer dark:hover:bg-amber-400  hover:scale-105 transition-all  ease-in-out">
       <div className="flex flex-col max-w-lg z-10">
         <h1 className="text-4xl font-extrabold mb-2 dark:text-card-fg ">
           Chat smarter, not harder 🚀
