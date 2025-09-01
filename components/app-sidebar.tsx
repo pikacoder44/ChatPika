@@ -1,6 +1,5 @@
 "use client";
 import { Home, Search, Plus } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,8 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-// Menu items.
+import useSWR from "swr";// Menu items.
 const items = [
   {
     title: "Home",
