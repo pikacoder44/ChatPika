@@ -1,6 +1,8 @@
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+// Import different themes - choose one you like:
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { materialLight } from "react-syntax-highlighter/dist/esm/styles/prism"; // light mode
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useRef, useEffect } from "react";
 
@@ -36,8 +38,8 @@ const ChatWindow = ({ messages }) => {
               <div
                 className={`px-4 py-2 rounded-xl max-w-[70%] break-words ${
                   msg.role === "user"
-                    ? "bg-blue-500 text-white"
-                    : "bg-zinc-800 text-white"
+                    ? "dark:bg-blue-500 bg-blue-50 text-black dark:text-white shadow-[35px_23px_51px_-27px_rgba(0,_0,_0,_0.1)]"
+                    : "dark:bg-zinc-800 bg-gray-200 dark:text-white text-black"
                 }`}
               >
                 <ReactMarkdown
@@ -56,7 +58,7 @@ const ChatWindow = ({ messages }) => {
                         </SyntaxHighlighter>
                       ) : (
                         <code
-                          className="bg-zinc-700 px-1.5 py-0.5 rounded text-sm font-mono"
+                          className="dark:bg-zinc-700 bg-gray-300 p-2 rounded text-sm font-mono"
                           {...props}
                         >
                           {children}
@@ -66,11 +68,9 @@ const ChatWindow = ({ messages }) => {
                     pre({ children, ...props }) {
                       return (
                         <pre
-                          className="bg-zinc-800 rounded-md p-2 my-2 overflow-x-auto"
-
+                          className="dark:bg-zinc-800 bg-gray-200 rounded-md p-2 my-2 overflow-x-auto"
                           {...props}
                         >
-                          
                           {children}
                         </pre>
                       );
