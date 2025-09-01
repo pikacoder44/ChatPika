@@ -1,4 +1,6 @@
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useRef, useEffect } from "react";
 
@@ -38,7 +40,89 @@ const ChatWindow = ({ messages }) => {
                     : "bg-zinc-800 text-white"
                 }`}
               >
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || "");
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          style={oneDark}
+                          language={match[1]}
+                          PreTag="div"
+                          className="rounded-md my-2"
+                          {...props}
+                        >
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code
+                          className="bg-zinc-700 px-1.5 py-0.5 rounded text-sm font-mono"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      );
+                    },
+                    pre({ children, ...props }) {
+                      return (
+                        <pre
+                          className="bg-zinc-800 rounded-md p-2 my-2 overflow-x-auto"
+
+                          {...props}
+                        >
+                          
+                          {children}
+                        </pre>
+                      );
+                    },
+                    p({ children, ...props }) {
+                      return (
+                        <p className="mb-2 last:mb-0" {...props}>
+                          {children}
+                        </p>
+                      );
+                    },
+                    ul({ children, ...props }) {
+                      return (
+                        <ul
+                          className="list-disc list-inside mb-2 space-y-1"
+                          {...props}
+                        >
+                          {children}
+                        </ul>
+                      );
+                    },
+                    ol({ children, ...props }) {
+                      return (
+                        <ol
+                          className="list-decimal list-inside mb-2 space-y-1"
+                          {...props}
+                        >
+                          {children}
+                        </ol>
+                      );
+                    },
+                    li({ children, ...props }) {
+                      return (
+                        <li className="ml-2" {...props}>
+                          {children}
+                        </li>
+                      );
+                    },
+                    blockquote({ children, ...props }) {
+                      return (
+                        <blockquote
+                          className="border-l-4 border-zinc-600 pl-4 italic text-zinc-300 my-2"
+                          {...props}
+                        >
+                          {children}
+                        </blockquote>
+                      );
+                    },
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               </div>
             </div>
           ))}
