@@ -33,10 +33,7 @@ export async function POST(req: Request) {
     console.log("Generated Title:", title);
 
     if (title) {
-      const updatedTitle = await Chat.updateOne(
-        { _id: chatId },
-        { title }
-      );
+      const updatedTitle = await Chat.updateOne({ _id: chatId }, { title });
       console.log("Chat title update result:", updatedTitle);
     }
 

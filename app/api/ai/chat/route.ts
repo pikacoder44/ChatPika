@@ -1,18 +1,17 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
-import { NextResponse } from "next/server"; 
+import { NextResponse } from "next/server";
 
 import User from "@/lib/models/User";
 import Chat from "@/lib/models/Chat";
-
 
 export async function POST(req: Request) {
   try {
     await connectDB();
 
     const { message, chatId } = await req.json();
-    
+
     // Add debugging
     console.log("Received chatId:", chatId);
     console.log("Received message:", message);
@@ -43,7 +42,7 @@ export async function POST(req: Request) {
     }
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
+
     // For Streaming Response:
     const stream = new ReadableStream({
       async start(controller) {
@@ -55,7 +54,7 @@ export async function POST(req: Request) {
             // First, let's check if the chat document exists
             const chatDoc = await Chat.findById(chatId);
             console.log("Found chat document:", chatDoc);
-            
+
             if (chatDoc) {
               const updateResult = await Chat.updateOne(
                 { _id: chatId },
@@ -82,7 +81,9 @@ export async function POST(req: Request) {
             const updateResult = await Chat.updateOne(
               { _id: chatId },
               {
-                $push: { messages: { role: "assistant", content: assistantReply } },
+                $push: {
+                  messages: { role: "assistant", content: assistantReply },
+                },
               }
             );
             console.log("Assistant message update result:", updateResult);
@@ -100,6 +101,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error in chat route:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

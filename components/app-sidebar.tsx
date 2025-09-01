@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import useSWR from "swr";// Menu items.
+import useSWR, { mutate } from "swr";
 const items = [
   {
     title: "Home",
@@ -27,48 +27,27 @@ const items = [
   },
 ];
 
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
 export function AppSidebar() {
   const router = useRouter();
-  const [chats, setChats] = useState<any[]>([]);
 
-  const openChat = async (id) => {
-    let response;
+  const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
+
+  const openChat = async (id: string) => {
     try {
-      response = await fetch(`/api/chats/${id}`, {
+      const response = await fetch(`/api/chats/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      let chat = await response.json();
-      if(response.ok){
-       
+
+      if (response.ok) {
         router.push(`/chat/${id}`);
       }
     } catch (error) {
       console.log("Error:", error);
-    } finally {
-      // console.log(chat);
     }
   };
-  // Fetch chats
-  useEffect(() => {
-    let getChats = async () => {
-      try {
-        let result = await fetch("/api/chats", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        let data = await result.json();
- 
-        setChats(data);
-      } catch (error) {
-        console.error("Failed to fetch chats:", error);
-      }
-    };
-    getChats();
-  }, []);
 
   // Create new chat
   const handleNewChat = async () => {
@@ -78,13 +57,16 @@ export function AppSidebar() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: `Chat ${chats.length + 1}` }),
       });
-      const newChat = await result.json();
-      setChats((prev) => [newChat, ...prev]);
+      if (result.ok) {
+        // Re-fetch chats after creating
+        mutate("/api/chats");
+      }
     } catch (error) {
       console.error("Failed to create chat:", error);
     }
   };
-
+  if (isLoading) return <p className="p-4">Loading chats...</p>;
+  if (error) return <p className="p-4 text-red-500">Failed to load chats</p>;
   return (
     <Sidebar>
       <SidebarContent>

@@ -6,6 +6,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from 'next/navigation';
+import {mutate} from "swr";
 export default function Chat() {
   type Message = {
     id: string;
@@ -54,9 +55,14 @@ export default function Chat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: messages,chatId:chatId }),
       });
+      if(response.status === 429){
+        alert("Can't generate title.You have reached the maximum number of requests. Please try again later.");
+        console.log("Can't generate title. You have reached the maximum number of requests. Please try again later.");
+        return;
+      }
       if(response.ok){
-        console.log("Done: ",response)
-        router.refresh();
+        
+        mutate("/api/chats");
       }
     };
     if (messages.length === 2) {
