@@ -1,5 +1,5 @@
 "use client";
-import { Home, Search, Plus } from "lucide-react";
+import { Home, Search, Plus, Loader } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -44,6 +44,7 @@ export function AppSidebar() {
   const router = useRouter();
   const params = useParams();
   const [currentChat, setCurrentChat] = useState<string | null>(null);
+  const [loadingChat, setLoadingChat] = useState<string | null>(null);
   const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
 
   // Initialize currentChat from URL params
@@ -55,6 +56,7 @@ export function AppSidebar() {
 
   const openChat = async (id: string) => {
     try {
+      setLoadingChat(id); // Start loading
       const response = await fetch(`/api/chats/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -66,6 +68,8 @@ export function AppSidebar() {
       }
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setLoadingChat(null); // Stop loading
     }
   };
 
@@ -207,13 +211,23 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item._id}>
                   <SidebarMenuButton
                     onClick={() => openChat(item._id)}
+                    disabled={loadingChat === item._id}
                     className={
                       currentChat === item._id
                         ? "bg-zinc-700 text-white border border-zinc-800"
+                        : loadingChat === item._id
+                        ? "bg-zinc-600/50 text-zinc-400"
                         : ""
                     }
                   >
-                    <span className="truncate">{item.title}</span>
+                    {loadingChat === item._id ? (
+                      <>
+                        <span className="truncate">{item.title}</span>
+                        <Loader className="h-4 w-4 animate-spin " />
+                      </>
+                    ) : (
+                      <span className="truncate">{item.title}</span>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
