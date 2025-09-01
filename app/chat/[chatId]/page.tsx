@@ -5,8 +5,8 @@ import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
-import { useRouter } from 'next/navigation';
-import {mutate} from "swr";
+import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 export default function Chat() {
   type Message = {
     id: string;
@@ -43,8 +43,6 @@ export default function Chat() {
       );
     };
 
-   
-
     dbDataLoad();
   }, [chatId]);
 
@@ -53,22 +51,25 @@ export default function Chat() {
       let response = await fetch("/api/ai/generatetitle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: messages,chatId:chatId }),
+        body: JSON.stringify({ messages: messages, chatId: chatId }),
       });
-      if(response.status === 429){
-        alert("Can't generate title.You have reached the maximum number of requests. Please try again later.");
-        console.log("Can't generate title. You have reached the maximum number of requests. Please try again later.");
+      if (response.status === 429) {
+        alert(
+          "Can't generate title.You have reached the maximum number of requests. Please try again later."
+        );
+        console.log(
+          "Can't generate title. You have reached the maximum number of requests. Please try again later."
+        );
         return;
       }
-      if(response.ok){
-        
+      if (response.ok) {
         mutate("/api/chats");
       }
     };
     if (messages.length === 2) {
       updateTitle();
     }
-  }, [messages,chatId,router]);
+  }, [messages, chatId, router]);
 
   // Helper function to create new chat
   const createNewChat = () => {
@@ -154,6 +155,12 @@ export default function Chat() {
     setLoading(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleChat();
+    }
+  };
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full dark:bg-zinc-900 dark:text-white">
       <div className="self-stretch">
@@ -179,6 +186,7 @@ export default function Chat() {
             className="focus:outline-none scroll-smooth   resize-none dark:text-white px-2 w-250 rounded-md items-center content-center"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Ask me something..."
           />
           {loading ? (
