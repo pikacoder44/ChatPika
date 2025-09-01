@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import useSWR, { mutate } from "swr";
@@ -29,6 +30,15 @@ const items = [
 ];
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+// Skeleton component for chat items
+const ChatSkeleton = () => (
+  <SidebarMenuItem>
+    <SidebarMenuButton disabled>
+      <Skeleton className="h-4 w-full" />
+    </SidebarMenuButton>
+  </SidebarMenuItem>
+);
 
 export function AppSidebar() {
   const router = useRouter();
@@ -79,8 +89,89 @@ export function AppSidebar() {
     }
   };
 
-  if (isLoading) return <p className="p-4">Loading chats...</p>;
-  if (error) return <p className="p-4 text-red-500">Failed to load chats</p>;
+  if (isLoading) {
+    return (
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Tools</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton disabled>
+                    <Plus />
+                    <span>New Chat</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton disabled>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Chats</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* Show 5 skeleton items while loading */}
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <ChatSkeleton key={index} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+    );
+  }
+
+  if (error) {
+    return (
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Tools</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={handleNewChat}>
+                    <Plus />
+                    <span>New Chat</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <a href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Chats</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <div className="p-4 text-center">
+                <p className="text-red-500 text-sm mb-2">
+                  Failed to load chats
+                </p>
+                <Skeleton className="h-4 w-24 mx-auto" />
+              </div>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar>
@@ -117,7 +208,9 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     onClick={() => openChat(item._id)}
                     className={
-                      currentChat === item._id ? "bg-zinc-700 text-white border border-zinc-800" : ""
+                      currentChat === item._id
+                        ? "bg-zinc-700 text-white border border-zinc-800"
+                        : ""
                     }
                   >
                     <span className="truncate">{item.title}</span>
