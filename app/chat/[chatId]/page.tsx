@@ -18,6 +18,7 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [titleGenerated, setTitleGenerated] = useState(false);
 
   //Detect if a user is logged in (via Clerk).
   const { user, isSignedIn } = useUser(); // Clerk State
@@ -41,6 +42,10 @@ export default function Chat() {
           content: msg.content,
         }))
       );
+      // If chat already has messages, mark title as generated
+      if (chat.messages.length > 0) {
+        setTitleGenerated(true);
+      }
     };
 
     dbDataLoad();
@@ -48,28 +53,40 @@ export default function Chat() {
 
   useEffect(() => {
     const updateTitle = async () => {
-      let response = await fetch("/api/ai/generatetitle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: messages, chatId: chatId }),
-      });
-      if (response.status === 429) {
-        alert(
-          "Can't generate title.You have reached the maximum number of requests. Please try again later."
-        );
-        console.log(
-          "Can't generate title. You have reached the maximum number of requests. Please try again later."
-        );
-        return;
-      }
-      if (response.ok) {
-        mutate("/api/chats");
+      // Only generate title if we have exactly 2 messages and haven't generated it yet
+      if (messages.length === 2 && !titleGenerated) {
+        // Check if both messages have content (assistant message is complete)
+        const [userMsg, assistantMsg] = messages;
+        if (
+          userMsg?.content &&
+          assistantMsg?.content &&
+          assistantMsg.content.trim() !== ""
+        ) {
+          setTitleGenerated(true); // Mark as generated immediately to prevent duplicate calls
+
+          let response = await fetch("/api/ai/generatetitle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: messages, chatId: chatId }),
+          });
+          if (response.status === 429) {
+            alert(
+              "Can't generate title.You have reached the maximum number of requests. Please try again later."
+            );
+            console.log(
+              "Can't generate title. You have reached the maximum number of requests. Please try again later."
+            );
+            return;
+          }
+          if (response.ok) {
+            mutate("/api/chats");
+          }
+        }
       }
     };
-    if (messages.length === 2) {
-      updateTitle();
-    }
-  }, [messages, chatId, router]);
+
+    updateTitle();
+  }, [messages, chatId, titleGenerated]);
 
   // Helper function to create new chat
   const createNewChat = () => {
