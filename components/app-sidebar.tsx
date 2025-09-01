@@ -58,6 +58,7 @@ export function AppSidebar() {
         body: JSON.stringify({ title: `Chat ${chats.length + 1}` }),
       });
       if (result.ok) {
+        router.push(`/chat/${result.id}`);
         // Re-fetch chats after creating
         mutate("/api/chats");
       }
