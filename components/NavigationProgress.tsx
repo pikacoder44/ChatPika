@@ -14,7 +14,7 @@ const NavigationLoader = () => {
     // Hide loader after a short delay
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 800);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [pathname, searchParams]);
@@ -24,28 +24,18 @@ const NavigationLoader = () => {
   return (
     <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/10 dark:bg-white/5 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/10 dark:bg-black/7  backdrop-blur-[2px]" />
 
       {/* Main loader container */}
       <div className="relative">
-        {/* Spinning ring */}
-        <div className="w-16 h-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin" />
-
-        {/* Inner pulsing dot */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
-        </div>
-
-        {/* Orbiting dots */}
-        <div
-          className="absolute inset-0 animate-spin"
-          style={{ animationDuration: "2s" }}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-10 h-10 shrink-0 animate-spin text-gray-800 dark:text-white"
+          viewBox="0 0 256 256"
+          fill="currentColor"
         >
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-2 h-2 bg-purple-500 rounded-full" />
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-2 h-2 bg-pink-500 rounded-full" />
-          <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-green-500 rounded-full" />
-          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1 w-2 h-2 bg-yellow-500 rounded-full" />
-        </div>
+          <path d="M128 63.04c-5.104 0-9.28-4.176-9.28-9.28V16.64c0-5.104 4.176-9.28 9.28-9.28s9.28 4.176 9.28 9.28v37.12c0 5.104-4.176 9.28-9.28 9.28zm52.548 21.692c-2.32 0-4.756-.928-6.612-2.668-3.596-3.596-3.596-9.512 0-13.108l26.216-26.216c3.596-3.596 9.512-3.596 13.108 0s3.596 9.512 0 13.108l-26.216 26.216c-1.856 1.856-4.176 2.668-6.496 2.668zm58.812 52.548h-37.12c-5.104 0-9.28-4.176-9.28-9.28s4.176-9.28 9.28-9.28h37.12c5.104 0 9.28 4.176 9.28 9.28s-4.176 9.28-9.28 9.28zm-32.596 78.764c-2.32 0-4.756-.928-6.612-2.668l-26.216-26.216c-3.596-3.596-3.596-9.512 0-13.108s9.512-3.596 13.108 0l26.216 26.216c3.596 3.596 3.596 9.512 0 13.108-1.74 1.74-4.176 2.668-6.496 2.668zM128 248.64c-5.104 0-9.28-4.176-9.28-9.28v-37.12c0-5.104 4.176-9.28 9.28-9.28s9.28 4.176 9.28 9.28v37.12c0 5.104-4.176 9.28-9.28 9.28zm-78.764-32.596c-2.32 0-4.756-.928-6.612-2.668-3.596-3.596-3.596-9.512 0-13.108l26.216-26.216c3.596-3.596 9.512-3.596 13.108 0s3.596 9.512 0 13.108l-26.216 26.216c-1.74 1.74-4.06 2.668-6.496 2.668zm4.524-78.764H16.64c-5.104 0-9.28-4.176-9.28-9.28s4.176-9.28 9.28-9.28h37.12c5.104 0 9.28 4.176 9.28 9.28s-4.176 9.28-9.28 9.28zm21.692-52.548c-2.32 0-4.756-.928-6.612-2.668l-26.1-26.216c-3.596-3.596-3.596-9.512 0-13.108s9.512-3.596 13.108 0l26.216 26.216c3.596 3.596 3.596 9.512 0 13.108-1.856 1.856-4.176 2.668-6.612 2.668z" />
+        </svg>
       </div>
     </div>
   );
