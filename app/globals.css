@@ -126,6 +126,10 @@ body,
   --card-fg: rgb(0, 0, 0);
 }
 
+@utility flex-center-row{
+  @apply flex justify-center items-center;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

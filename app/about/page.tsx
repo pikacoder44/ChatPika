@@ -1,6 +1,6 @@
 export default function AboutPage() {
   return (
-    <main className="relative w-full flex justify-center items-center">
+    <main className="relative w-full flex-center-row">
       <section className="max-w-3xl w-full px-6 py-16 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
           About ChatPika
