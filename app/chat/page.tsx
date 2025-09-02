@@ -88,7 +88,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className=" bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900">
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center flex-1 px-6 py-16">
         <div className="max-w-4xl w-full text-center">
