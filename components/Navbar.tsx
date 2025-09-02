@@ -21,7 +21,7 @@ const Navbar = () => {
     console.log(mode);
   };
   return (
-    <div className=" p-3 dark:bg-zinc-900  dark:text-white w-full fixed z-50">
+    <div className=" py-2 px-6 dark:bg-zinc-900  dark:text-white w-full sticky ">
       <nav className="navbar flex justify-between  flex-row ">
         <Link href="/" className="hover:cursor-pointer flex items-center">
           <span className="font-bold text-4xl">ChatPika</span>
