@@ -1,11 +1,19 @@
 import Link from "next/link";
-
+import Image from "next/image";
 const Footer = () => {
   return (
     <section className="w-full pt-24">
       <footer className="mx-auto w-full max-w-6xl px-6 text-center">
         {/* Brand */}
         <div className="flex flex-col items-center gap-2">
+        <Image
+            src="/android-chrome-192x192.png"
+            alt="ChatPika Logo"
+            width={50}
+            height={50}
+            className="rounded-full"
+            unoptimized
+          />
           <h1 className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
             ChatPika
           </h1>

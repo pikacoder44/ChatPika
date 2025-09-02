@@ -23,9 +23,10 @@ const Navbar = () => {
   return (
     <div className=" p-3 dark:bg-zinc-900  dark:text-white w-full fixed z-50">
       <nav className="navbar flex justify-between  flex-row ">
-        <Link href="/" className="hover:cursor-pointer">
-          <h1 className=" font-bold text-4xl mr-10 text-center">ChatPika</h1>
+        <Link href="/" className="hover:cursor-pointer flex items-center">
+          <span className="font-bold text-4xl">ChatPika</span>
         </Link>
+
         <ul className="main-nav flex flex-row justify-between cursor-pointer">
           <Link href={"/"}>
             <li className="p-2 m-2">Home</li>
