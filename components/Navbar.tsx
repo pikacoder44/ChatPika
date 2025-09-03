@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 import {
@@ -9,59 +9,128 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-const Navbar = () => {
-  const [mode, setMode] = useState("");
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-  const toggleMode = () => {
-    if (mode === "dark") {
-      setMode("light");
-    } else {
-      setMode("dark");
-    }
-    console.log(mode);
-  };
+const Navbar = () => {
   return (
-    <div className=" py-2 px-6 dark:bg-zinc-900  dark:text-white w-full sticky ">
-      <nav className="navbar flex justify-between  flex-row ">
+    <div className="py-2 px-6 dark:bg-zinc-900 dark:text-white w-full sticky top-0 z-50 bg-white border-b border-zinc-200 dark:border-zinc-800">
+      <nav className="navbar flex justify-between items-center flex-row">
         <Link href="/" className="hover:cursor-pointer flex items-center">
           <span className="font-bold text-4xl">ChatPika</span>
         </Link>
 
-        <ul className="main-nav flex flex-row justify-between cursor-pointer">
-          <Link href={"/"}>
-            <li className="p-2 m-2">Home</li>
-          </Link>
-          <Link href={"/pricing"}>
-            <li className="p-2 m-2">Pricing</li>
-          </Link>
-          <Link href={"/about"}>
-            <li className="p-2 m-2">About</li>
-          </Link>
-          <Link href={"/contact"}>
-            <li className="p-2 m-2">Contact</li>
-          </Link>
-        </ul>
-        {/* Login  */}
-        <ul className="flex flex-row justify-between items-center gap-4">
-          <li className="flex items-center">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          <ul className="flex items-center gap-6">
+            <li>
+              <Link href="/" className="hover:text-green-500 transition-colors">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/pricing"
+                className="hover:text-green-500 transition-colors"
+              >
+                Pricing
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/about"
+                className="hover:text-green-500 transition-colors"
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/contact"
+                className="hover:text-green-500 transition-colors"
+              >
+                Contact
+              </Link>
+            </li>
+          </ul>
+
+          <div className="flex items-center gap-4">
             <ThemeToggle />
-          </li>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
             <SignedOut>
-              <SignInButton className=" hover:text-green-500 cursor-pointer" />
+              <SignInButton className="hover:text-green-500 cursor-pointer" />
               <SignUpButton>
-                <button className="bg-[#13d75e] hover:bg-[#342b54] hover:text-white text-black rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                <button className="bg-[#13d75e] hover:bg-[#342b54] hover:text-white text-black rounded-full font-medium text-sm px-4 h-10 cursor-pointer transition-colors">
                   Get Started
                 </button>
               </SignUpButton>
             </SignedOut>
             <SignedIn>
-              <div className="[&_.cl-userButtonTrigger]:!h-16 [&_.cl-userButtonTrigger]:!w-16 [&_.cl-userButtonAvatarBox]:!h-12 [&_.cl-userButtonAvatarBox]:!w-12">
+              <div className="[&_.cl-userButtonTrigger]:!h-10 [&_.cl-userButtonTrigger]:!w-10 [&_.cl-userButtonAvatarBox]:!h-8 [&_.cl-userButtonAvatarBox]:!w-8">
                 <UserButton />
               </div>
             </SignedIn>
-          </header>
-        </ul>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden flex items-center gap-3">
+          <SignedIn>
+            <div className="[&_.cl-userButtonTrigger]:!h-8 [&_.cl-userButtonTrigger]:!w-8 [&_.cl-userButtonAvatarBox]:!h-6 [&_.cl-userButtonAvatarBox]:!w-6">
+              <UserButton />
+            </div>
+          </SignedIn>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Menu className="h-5 w-5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-50 mt-2 dark:bg-gray-400 dark:text-black opacity-95">
+              <DropdownMenuItem asChild>
+                <Link href="/" className="w-full">
+                  Home
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pricing" className="w-full">
+                  Pricing
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/about" className="w-full">
+                  About
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/contact" className="w-full">
+                  Contact
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="flex items-center justify-between p-2">
+                <span className="text-sm">Theme</span>
+                <ThemeToggle />
+              </div>
+              <SignedOut>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <SignInButton className="w-full text-left" />
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <SignUpButton>
+                    <button className="w-full text-left bg-[#13d75e] hover:bg-[#342b54] hover:text-white text-black rounded font-medium text-sm px-3 py-2 cursor-pointer transition-colors">
+                      Get Started
+                    </button>
+                  </SignUpButton>
+                </DropdownMenuItem>
+              </SignedOut>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </nav>
     </div>
   );

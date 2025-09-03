@@ -11,7 +11,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
-
+import { shadcn} from "@clerk/themes";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,14 +38,25 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+    appearance={{
+      baseTheme: shadcn,
+      variables: {
+        colorPrimary: "#3b82f6", // Tailwind blue-500
+      },
+      elements: {
+        userButtonPopoverCard: "max-w-[200px] sm:max-w-[300px]", // smaller on mobile
+        userButtonPopover: "p-2 text-sm", // compact menu
+      },
+    }}
+    >
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NavigationLoader />
-            <Navbar /> {/* pt matches navbar height */}
+            <Navbar />
             {children}
           </ThemeProvider>
         </body>
