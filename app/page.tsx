@@ -17,8 +17,8 @@ export default function Home() {
         <div className="absolute top-40 -right-16 h-80 w-80 rounded-full bg-violet-400/25 blur-3xl animate-pulse [animation-duration:7s] [animation-delay:1.5s]" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full bg-indigo-400/20 blur-3xl animate-pulse [animation-duration:8s] [animation-delay:3s]" />
       </div>
-      <div className="relative z-10 flex w-full flex-col items-center">
-        <h1 className="md:text-6xl text-xl md:mt-10 mt-3 font-extrabold tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
+      <div className="relative z-10 flex w-full flex-col text-center items-center">
+        <h1 className="md:text-6xl text-4xl md:mt-10 mt-3 font-extrabold tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
           Chat with your personal AI assistant
         </h1>
         <p className="md:mt-3 md:text-2xl mt-1 text-md text-slate-600 dark:text-slate-300">
