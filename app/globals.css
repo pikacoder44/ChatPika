@@ -139,6 +139,8 @@ body,
   }
 }
 
+
+
 .ScrollAreaRoot {
   border-radius: 4px;
   overflow: hidden;
@@ -201,71 +203,4 @@ body,
 
 .ScrollAreaCorner {
   background: var(--black-a5);
-}
-
-.card {
-  @apply flex cursor-pointer flex-col gap-2 rounded-xl border p-4 text-left transition-colors;
-}
-
-.main-nav li {
-  @apply opacity-70 hover:opacity-100;
-}
-
-.feature-card {
-  @apply flex flex-col border-4 items-center px-6 py-10 rounded-2xl text-center dark:bg-zinc-800 dark:text-zinc-300 shadow-md cursor-default transition-all duration-500 ease-out hover:scale-[1.07];
-}
-.feature-card:hover {
-  @apply bg-card-bg text-card-fg;
-}
-.feature-card:hover .feature-txt {
-  @apply text-card-fg;
-}
-.feature-txt {
-  @apply text-sm opacity-80 leading-relaxed dark:text-zinc-200;
-}
-
-/* Navigation Progress Bar Animations */
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes progress-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4),
-      0 0 16px rgba(147, 51, 234, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6),
-      0 0 24px rgba(147, 51, 234, 0.4);
-  }
-}
-
-@keyframes particle-float {
-  0%,
-  100% {
-    transform: translateY(0px) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-2px) scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-.navigation-progress-shimmer {
-  animation: shimmer 1.5s ease-in-out infinite;
-}
-
-.navigation-progress-glow {
-  animation: progress-glow 1.5s ease-in-out infinite;
-}
-
-.navigation-progress-particle {
-  animation: particle-float 1s ease-in-out infinite;
 }

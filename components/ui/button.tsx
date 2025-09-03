@@ -20,7 +20,7 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-100/50 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:dark:hover:bg-zinc-800/50",
         link: "text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50",
-        cta: "bg-blue-900 text-primary-foreground shadow-xs hover:bg-white hover:text-black  px-8 py-4 text-lg font-semibold rounded-xl mt-6 transition-all duration-200 ease-in-out shadow-lg dark:bg-primary hover:cursor-pointer dark:hover:text-white dark:hover:bg-zinc-800 hover:scale-105",
+        cta: "md:bg-blue-900 bg-primary text-primary-foreground shadow-xs hover:bg-white hover:text-black  px-8 py-4 text-lg font-semibold rounded-xl mt-6 transition-all duration-200 ease-in-out shadow-lg md:dark:bg-primary hover:cursor-pointer dark:hover:text-white dark:hover:bg-zinc-800 hover:scale-105",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
