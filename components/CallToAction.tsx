@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 const CTA = () => {
   return (
-    <div className="relative w-full max-w-3xl mx-auto text-center overflow-hidden cta-dark cursor-pointer rounded-md   transition-all duration-500 ease-in-out md:px-8 md:py-12 m-8 px-2 py-4 shadow-lg flex md:flex-row flex-col items-center justify-between cta  hover:scale-105 ">
+    <div className="relative w-full max-w-3xl mx-auto text-center overflow-hidden cta-dark cursor-pointer rounded-md   transition-all duration-500 ease-in-out md:px-8 md:py-12 mb-8 mt-10 px-2 py-4 shadow-lg flex md:flex-row flex-col items-center justify-between cta  hover:scale-105 ">
       <div className="flex flex-col max-w-lg z-10">
         <h1 className="md:text-4xl text-xl font-extrabold mb-2  ">
           Chat smarter, not harder 🚀

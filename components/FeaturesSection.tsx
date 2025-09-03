@@ -3,7 +3,7 @@ import React from "react";
 const Features = () => {
   return (
     <div>
-      <div className="mx-auto md:mt-20 mt-5 flex w-full flex-col items-center justify-center px-2 pb-2 flex-1">
+      <div className="mx-auto md:mt-10 mt-5 flex w-full flex-col items-center justify-center px-2 pb-2 flex-1">
         <h1 className="mb-6 md:text-4xl text-xl font-black text-center bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
           Why ChatPika?
         </h1>
