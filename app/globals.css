@@ -271,10 +271,10 @@ body,
 }
 
 .cta {
-  @apply relative w-full max-w-3xl mx-auto text-center bg-gradient-to-t from-blue-600 via-blue-200 to-blue-100 rounded-md  px-8 py-12 transition-all duration-500 ease-in-out hover:bg-gradient-to-l hover:from-blue-400 hover:via-blue-600 hover:to-blue-700 hover:text-white text-black hover:shadow-2xl;
+  @apply  bg-gradient-to-t from-blue-600 via-blue-200 to-blue-100  hover:bg-gradient-to-l hover:from-blue-400 hover:via-blue-600 hover:to-blue-700 hover:text-white text-black hover:shadow-2xl;
   
 }
 
 .cta-dark {
-  @apply relative w-full max-w-3xl mx-auto text-center dark:bg-gradient-to-t dark:from-blue-900 dark:via-blue-700 dark:to-blue-300 dark:rounded-2xl dark:shadow-md dark:px-8 dark:py-12 transition-all duration-500 ease-in-out dark:hover:bg-gradient-to-l dark:hover:from-zinc-700 dark:hover:to-blue-900 dark:hover:text-white dark:text-black dark:hover:shadow-2xl;
+  @apply  dark:bg-gradient-to-t dark:from-blue-900 dark:via-blue-700 dark:to-blue-300 dark:hover:bg-gradient-to-l dark:hover:from-blue-700 dark:hover:to-blue-900 dark:hover:text-white dark:text-white sm:dark:text-black dark:hover:shadow-2xl;
 }

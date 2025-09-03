@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 const CTA = () => {
   return (
-    <div className="relative overflow-hidden cta-dark cursor-pointer p-8 m-8 rounded-2xl shadow-lg flex flex-row items-center justify-between cta  hover:scale-105 transition-all  ease-in-out">
+    <div className="relative w-full max-w-3xl mx-auto text-center overflow-hidden cta-dark cursor-pointer rounded-md   transition-all duration-500 ease-in-out md:px-8 md:py-12 m-8 px-2 py-4 shadow-lg flex md:flex-row flex-col items-center justify-between cta  hover:scale-105 ">
       <div className="flex flex-col max-w-lg z-10">
-        <h1 className="md:text-4xl text-lg font-extrabold mb-2  ">
+        <h1 className="md:text-4xl text-xl font-extrabold mb-2  ">
           Chat smarter, not harder 🚀
         </h1>
-        <p className="md:text-lg text-sm  ">
+        <p className="md:text-lg text-sm   ">
           Meet <span className="font-semibold">ChatPik</span> — your personal AI
           companion built for speed, simplicity, and real-time responses. Start
           now and see how effortless AI conversations can be.
