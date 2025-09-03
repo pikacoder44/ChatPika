@@ -19,6 +19,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [titleGenerated, setTitleGenerated] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   //Detect if a user is logged in (via Clerk).
   const { user, isSignedIn } = useUser(); // Clerk State
@@ -28,6 +29,23 @@ export default function Chat() {
 
   const chatId = params.chatId as string;
   const prompt = searchParams.get("prompt");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  function generateId() {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+      return crypto.randomUUID();
+    }
+    // Fallback: generate UUID manually
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16 | 0;
+      const v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   useEffect(() => {
     let dbDataLoad = async () => {
       let response = await fetch(`/api/chats/${chatId}`, {
@@ -112,7 +130,7 @@ export default function Chat() {
 
     // Add user message
     const userMessage: Message = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       role: "user",
       content: message,
     };
@@ -135,7 +153,7 @@ export default function Chat() {
       const decoder = new TextDecoder();
 
       // Add empty assistant message once
-      const assistantId = crypto.randomUUID();
+      const assistantId = generateId();
       setMessages((prev) => [
         ...prev,
         { id: assistantId, role: "assistant", content: "" },
@@ -162,7 +180,7 @@ export default function Chat() {
       setMessages((prev) => [
         ...prev,
         {
-          id: crypto.randomUUID(),
+          id: generateId(),
           role: "assistant",
           content: "Error: " + error.message,
         },
@@ -192,70 +210,72 @@ export default function Chat() {
           }}
         />
       ) : (
-        <div className="flex w-full justify-center">
+        <div className="flex w-full justify-center px-2 sm:px-4">
           <ChatWindow messages={messages} />
         </div>
       )}
-
-      <div className="flex flex-row justify-center ">
-        <div className="flex flex-row bg-zinc-700 rounded-lg p-2 w-auto m-2 justify-center gap-4 items-center">
-          <textarea
-            className="focus:outline-none scroll-smooth   resize-none dark:text-white px-2 w-250 rounded-md items-center content-center"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask me something..."
-          />
-          {loading ? (
-            <button disabled>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6 mr-4 cursor-not-allowed"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
-                />
-              </svg>
-            </button>
-          ) : message.length == 0 ? (
-            <button disabled>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="black"
-                className="size-10 mr-3 cursor-not-allowed"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          ) : (
-            <button onClick={handleChat}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="white"
-                className="size-10 mr-3 cursor-pointer"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          )}
+      {mounted && (
+        <div className="flex justify-center px-2 sm:px-4 ">
+          <div className="m-2 flex w-full max-w-3xl mb-30 flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 rounded-lg bg-zinc-700 p-2 justify-center">
+            <textarea
+              suppressHydrationWarning
+              className="w-full min-h-12 max-h-48 sm:min-h-12 sm:max-h-60 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth dark:text-white placeholder-zinc-300"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask me something..."
+            />
+            {loading ? (
+              <button disabled className="self-end sm:self-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-8 sm:size-6 mr-2 sm:mr-4 cursor-not-allowed"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
+                  />
+                </svg>
+              </button>
+            ) : message.length == 0 ? (
+              <button disabled className="self-end sm:self-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-10 sm:size-10 mr-2 sm:mr-3 cursor-not-allowed"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            ) : (
+              <button onClick={handleChat} className="self-end sm:self-auto">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                  className="size-10 sm:size-10 mr-2 sm:mr-3 cursor-pointer"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,9 @@
 "use client";
+
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +11,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+// Clerk components (client-only, no SSR to avoid hydration mismatch)
+const SignInButton = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.SignInButton),
+  { ssr: false }
+);
+const SignUpButton = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.SignUpButton),
+  { ssr: false }
+);
+const SignedIn = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.SignedIn),
+  { ssr: false }
+);
+const SignedOut = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.SignedOut),
+  { ssr: false }
+);
+const UserButton = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.UserButton),
+  { ssr: false }
+);
 
 const Navbar = () => {
   return (
