@@ -19,7 +19,7 @@ import {
 
 const Navbar = () => {
   return (
-    <div className="md:py-5 md:px-6 py-2 px-5 dark:bg-zinc-900 dark:text-white w-full sticky top-0 z-50 bg-white border-b border-zinc-200 dark:border-zinc-800">
+    <div className="py-2 md:py-5 px-5 md:px-6 dark:bg-zinc-900 dark:text-white w-full sticky top-0 z-50 bg-white border-b border-zinc-200 dark:border-zinc-800">
       <nav className="navbar flex justify-between items-center flex-row">
         <Link href="/" className="hover:cursor-pointer flex items-center">
           <span className="font-bold md:text-4xl text-3xl">ChatPika</span>
