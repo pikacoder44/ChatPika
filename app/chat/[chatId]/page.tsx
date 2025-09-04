@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
+import { Square, SendHorizonal, Ban } from "lucide-react";
 export default function Chat() {
   type Message = {
     id: string;
@@ -226,12 +227,12 @@ export default function Chat() {
       )}
       {mounted && (
         <div className="flex justify-center px-2 sm:px-4 ">
-          <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center gap-2 sm:gap-4 rounded-lg bg-zinc-700 p-2 pb-[max(env(safe-area-inset-bottom),0px)]">
+          <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-lg bg-zinc-700 border-2 min-h-20  text-white shadow-[0px_1px_52px_0px_rgba(0,_0,_0,_0.1)] p-2 ">
             <textarea
               suppressHydrationWarning
               ref={textareaRef}
               rows={1}
-              className="w-full min-h-20 max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth dark:text-white placeholder-zinc-300"
+              className="w-full  max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth placeholder-zinc-300"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -245,51 +246,25 @@ export default function Chat() {
               placeholder="Ask me something..."
             />
             {loading ? (
-              <button disabled className="sm:self-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-8 sm:size-6 mr-2 sm:mr-4 cursor-not-allowed"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
-                  />
-                </svg>
+              <button
+                disabled
+                className="w-15 h-full flex items-center justify-center"
+              >
+                <Square size={20} />
               </button>
             ) : message.length == 0 ? (
-              <button disabled className=" sm:self-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-10 sm:size-10 mr-2 sm:mr-3 cursor-not-allowed"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <button
+                disabled
+                className="w-15 h-full flex items-center justify-center"
+              >
+                <Ban size={25} />
               </button>
             ) : (
-              <button onClick={handleChat} className="sm:self-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="white"
-                  className="size-10 sm:size-10 mr-2 sm:mr-3 cursor-pointer"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.53 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v5.69a.75.75 0 0 0 1.5 0v-5.69l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <button
+                onClick={handleChat}
+                className="w-15 h-full flex items-center justify-center"
+              >
+                <SendHorizonal size={25} />
               </button>
             )}
           </div>
