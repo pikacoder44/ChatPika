@@ -255,7 +255,7 @@ export default function Chat() {
             ) : message.length == 0 ? (
               <button
                 disabled
-                className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 "
+                className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 dark:text-gray-900 "
               >
                 <SendHorizonal size={25} fill="gray"/>
               </button>
