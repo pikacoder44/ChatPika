@@ -26,8 +26,8 @@ const ChatWindow = ({ messages }) => {
       ref={scrollAreaRef}
       className=" ScrollAreaRoot w-full m-0 h-full min-h-0 rounded-md overflow-hidden "
     >
-      <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full p-3 m-0 pb-28 sm:pb-4">
-        <div className="w-[80%] mx-auto  flex flex-col gap-3 p-3  rounded-md ">
+      <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full md:p-3 m-0 pb-28 sm:pb-4">
+        <div className="md:w-[60%] w-full mx-auto flex flex-col gap-3 p-3  rounded-md ">
           {messages.map((msg, index) => (
             <div
               key={index}
