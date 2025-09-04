@@ -45,7 +45,7 @@ export function AppSidebar() {
   const params = useParams();
   const [currentChat, setCurrentChat] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
-  const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
+  const { chats, error, isLoading } = useSWR("/api/chats", fetcher);
 
   // Initialize currentChat from URL params
   useEffect(() => {
@@ -134,49 +134,6 @@ export function AppSidebar() {
     );
   }
 
-  if (error) {
-    return (
-      <Sidebar>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Tools</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton onClick={handleNewChat}>
-                    <Plus />
-                    <span>New Chat</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>Chats</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <div className="p-4 text-center">
-                <p className="text-red-500 text-sm mb-2">
-                  Failed to load chats
-                </p>
-                <Skeleton className="h-4 w-24 mx-auto" />
-              </div>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-    );
-  }
-
   return (
     <Sidebar>
       <SidebarContent>
@@ -222,7 +179,9 @@ export function AppSidebar() {
                   >
                     {loadingChat === item._id ? (
                       <>
-                        <span className="truncate text-white">{item.title}</span>
+                        <span className="truncate text-white">
+                          {item.title}
+                        </span>
 
                         <Loader
                           color="white"
