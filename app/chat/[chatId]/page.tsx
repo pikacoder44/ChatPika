@@ -251,7 +251,6 @@ export default function Chat() {
                 className="w-15 h-full flex items-center justify-center"
               >
                 <div className="bg-gray-300 p-3 rounded-full animate-pulse">
-
                 <Square size={13} fill="black" strokeWidth={0}/>
                 </div>
               </button>
