@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -20,6 +20,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [titleGenerated, setTitleGenerated] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   //Detect if a user is logged in (via Clerk).
   const { user, isSignedIn } = useUser(); // Clerk State
@@ -33,6 +34,15 @@ export default function Chat() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Auto-resize textarea as user types (up to a reasonable max)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const maxPx = 192; // ~12rem (Tailwind h-48)
+    el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
+  }, [message]);
 
   function generateId() {
     if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -197,7 +207,7 @@ export default function Chat() {
     }
   };
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] w-full dark:bg-zinc-900 dark:text-white">
+    <div className="flex flex-col h-[100svh] w-full dark:bg-zinc-900 dark:text-white">
       <div className="self-stretch">
         <div className="relative mt-[-10px] z-10">
           <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 backdrop-blur shadow-lg" />
@@ -210,23 +220,32 @@ export default function Chat() {
           }}
         />
       ) : (
-        <div className="flex w-full justify-center px-2 sm:px-4">
+        <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 flex-1">
           <ChatWindow messages={messages} />
         </div>
       )}
       {mounted && (
         <div className="flex justify-center px-2 sm:px-4 ">
-          <div className="m-2 flex w-full max-w-3xl mb-30 flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 rounded-lg bg-zinc-700 p-2 justify-center">
+          <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center gap-2 sm:gap-4 rounded-lg bg-zinc-700 p-2 pb-[max(env(safe-area-inset-bottom),0px)]">
             <textarea
               suppressHydrationWarning
-              className="w-full min-h-12 max-h-48 sm:min-h-12 sm:max-h-60 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth dark:text-white placeholder-zinc-300"
+              ref={textareaRef}
+              rows={1}
+              className="w-full min-h-20 max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth dark:text-white placeholder-zinc-300"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
+              onInput={() => {
+                const el = textareaRef.current;
+                if (!el) return;
+                el.style.height = "auto";
+                const maxPx = 192;
+                el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
+              }}
               placeholder="Ask me something..."
             />
             {loading ? (
-              <button disabled className="self-end sm:self-auto">
+              <button disabled className="sm:self-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -243,7 +262,7 @@ export default function Chat() {
                 </svg>
               </button>
             ) : message.length == 0 ? (
-              <button disabled className="self-end sm:self-auto">
+              <button disabled className=" sm:self-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -258,7 +277,7 @@ export default function Chat() {
                 </svg>
               </button>
             ) : (
-              <button onClick={handleChat} className="self-end sm:self-auto">
+              <button onClick={handleChat} className="sm:self-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
