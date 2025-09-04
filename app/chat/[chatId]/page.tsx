@@ -7,7 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
-import { Square, SendHorizonal, Ban } from "lucide-react";
+import { Square, SendHorizonal } from "lucide-react";
 export default function Chat() {
   type Message = {
     id: string;
@@ -257,7 +257,7 @@ export default function Chat() {
                 disabled
                 className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 dark:text-gray-900 "
               >
-                <SendHorizonal size={25} fill="gray"/>
+                <SendHorizonal size={25} fill="gray" />
               </button>
             ) : (
               <button
