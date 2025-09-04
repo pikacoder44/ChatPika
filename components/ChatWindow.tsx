@@ -36,7 +36,7 @@ const ChatWindow = ({ messages }) => {
               }`}
             >
               <div
-                className={`px-4 py-2 rounded-xl max-w-[70%] break-words ${
+                className={`px-4 py-2 rounded-xl md:max-w-[70%] max-w-[90%] break-words ${
                   msg.role === "user"
                     ? "dark:bg-blue-500 bg-blue-50 text-black dark:text-white shadow-[35px_23px_51px_-27px_rgba(0,_0,_0,_0.1)]"
                     : "dark:bg-zinc-800 bg-gray-200 dark:text-white text-black"
