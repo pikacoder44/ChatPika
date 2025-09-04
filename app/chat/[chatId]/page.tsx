@@ -208,76 +208,80 @@ export default function Chat() {
       handleChat();
     }
   };
+  const [hideAuthModal, setHideAuthModal] = useState(false);
+
   return (
-    <div>
-      {!isSignedIn ? (
-        <SignInReq />
-      ) : (
-        <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
-          <div className="self-stretch ">
-            <div className="fixed mt-[-10px] z-50">
-              <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
+    <div className="relative">
+      {/* Main chat content - always rendered */}
+      <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
+        <div className="self-stretch ">
+          <div className="fixed mt-[-10px] z-50">
+            <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
+          </div>
+        </div>
+        {messages.length === 0 ? (
+          <WelcomeChat
+            onPick={(m) => {
+              setMessage(m);
+            }}
+          />
+        ) : (
+          <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
+            <ChatWindow messages={messages} />
+          </div>
+        )}
+        {mounted && (
+          <div className="flex justify-center px-2 sm:px-4 ">
+            <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-[28px] dark:bg-zinc-700 dark:border-0 border-2 border-zinc-300 min-h-10 dark:text-white shadow-sm p-2 ">
+              <textarea
+                suppressHydrationWarning
+                ref={textareaRef}
+                rows={1}
+                className="w-full  max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth placeholder-zinc-300"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onInput={() => {
+                  const el = textareaRef.current;
+                  if (!el) return;
+                  el.style.height = "auto";
+                  const maxPx = 192;
+                  el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
+                }}
+                placeholder="Ask me something..."
+              />
+              {loading ? (
+                <button
+                  disabled
+                  className="w-15 h-full flex items-center justify-center"
+                >
+                  <div className="bg-gray-300 p-3 rounded-full animate-pulse">
+                    <Square size={13} fill="black" strokeWidth={0} />
+                  </div>
+                </button>
+              ) : message.length == 0 ? (
+                <button
+                  disabled
+                  className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 dark:text-gray-900 "
+                >
+                  <SendHorizonal size={25} fill="gray" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleChat}
+                  className="w-15 h-full flex items-center justify-center"
+                >
+                  <SendHorizonal size={25} />
+                </button>
+              )}
             </div>
           </div>
-          {messages.length === 0 ? (
-            <WelcomeChat
-              onPick={(m) => {
-                setMessage(m);
-              }}
-            />
-          ) : (
-            <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
-              <ChatWindow messages={messages} />
-            </div>
-          )}
-          {mounted && (
-            <div className="flex justify-center px-2 sm:px-4 ">
-              <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-[28px] dark:bg-zinc-700 dark:border-0 border-2 border-zinc-300 min-h-10 dark:text-white shadow-sm p-2 ">
-                <textarea
-                  suppressHydrationWarning
-                  ref={textareaRef}
-                  rows={1}
-                  className="w-full  max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth placeholder-zinc-300"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  onInput={() => {
-                    const el = textareaRef.current;
-                    if (!el) return;
-                    el.style.height = "auto";
-                    const maxPx = 192;
-                    el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
-                  }}
-                  placeholder="Ask me something..."
-                />
-                {loading ? (
-                  <button
-                    disabled
-                    className="w-15 h-full flex items-center justify-center"
-                  >
-                    <div className="bg-gray-300 p-3 rounded-full animate-pulse">
-                      <Square size={13} fill="black" strokeWidth={0} />
-                    </div>
-                  </button>
-                ) : message.length == 0 ? (
-                  <button
-                    disabled
-                    className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 dark:text-gray-900 "
-                  >
-                    <SendHorizonal size={25} fill="gray" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleChat}
-                    className="w-15 h-full flex items-center justify-center"
-                  >
-                    <SendHorizonal size={25} />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+        )}
+      </div>
+
+      {/* Modal overlay - only shown when not signed in */}
+      {!isSignedIn && !hideAuthModal && (
+        <SignInReq onClose={() => setHideAuthModal(true)} />
       )}
     </div>
   );
