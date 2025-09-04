@@ -7,7 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider className="fixed z-[100]">
+    <SidebarProvider className="fixed md:z-[100]">
       <AppSidebar />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>

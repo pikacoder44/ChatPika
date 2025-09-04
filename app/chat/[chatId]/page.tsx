@@ -211,7 +211,7 @@ export default function Chat() {
     <div className="flex flex-col h-[100svh] w-full dark:bg-zinc-900 dark:text-white">
       <div className="self-stretch">
         <div className="relative mt-[-10px] z-10">
-          <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 backdrop-blur shadow-lg" />
+          <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
         </div>
       </div>
       {messages.length === 0 ? (
