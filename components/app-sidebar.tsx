@@ -45,7 +45,7 @@ export function AppSidebar() {
   const params = useParams();
   const [currentChat, setCurrentChat] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
-  const { chats, error, isLoading } = useSWR("/api/chats", fetcher);
+  const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
 
   // Initialize currentChat from URL params
   useEffect(() => {
