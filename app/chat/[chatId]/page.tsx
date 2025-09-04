@@ -227,7 +227,7 @@ export default function Chat() {
       )}
       {mounted && (
         <div className="flex justify-center px-2 sm:px-4 ">
-          <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-lg bg-zinc-700 border-2 min-h-20  text-white shadow-[0px_1px_52px_0px_rgba(0,_0,_0,_0.1)] p-2 ">
+          <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-[28px] dark:bg-zinc-700 dark:border-0 border-2 border-zinc-300 min-h-10 dark:text-white shadow-sm p-2 ">
             <textarea
               suppressHydrationWarning
               ref={textareaRef}
