@@ -212,7 +212,6 @@ export default function Chat() {
 
   return (
     <div className="relative">
-      {/* Main chat content - always rendered */}
       <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
         <div className="self-stretch ">
           <div className="fixed mt-[-10px] z-50">
@@ -279,7 +278,6 @@ export default function Chat() {
         )}
       </div>
 
-      {/* Modal overlay - only shown when not signed in */}
       {!isSignedIn && !hideAuthModal && (
         <SignInReq onClose={() => setHideAuthModal(true)} />
       )}
