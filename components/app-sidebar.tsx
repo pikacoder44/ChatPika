@@ -216,14 +216,19 @@ export function AppSidebar() {
                       currentChat === item._id
                         ? "bg-zinc-700 text-white border border-zinc-800"
                         : loadingChat === item._id
-                        ? "bg-zinc-600/50 text-zinc-400"
+                        ? "dark:bg-zinc-600/50  bg-zinc-900"
                         : ""
                     }
                   >
                     {loadingChat === item._id ? (
                       <>
-                        <span className="truncate">{item.title}</span>
-                        <Loader className="h-4 w-4 animate-spin " />
+                        <span className="truncate text-white">{item.title}</span>
+
+                        <Loader
+                          color="white"
+                          strokeWidth={2}
+                          className="h-4 w-4 animate-spin "
+                        />
                       </>
                     ) : (
                       <span className="truncate">{item.title}</span>
