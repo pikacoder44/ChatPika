@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,8 +36,14 @@ const UserButton = dynamic(
 );
 
 const Navbar = () => {
+  const pathname = usePathname();
+  const isChatRoute = pathname?.startsWith("/chat");
   return (
-    <div className="py-2 md:py-5 px-5 md:px-6 dark:bg-zinc-900 dark:text-white w-full sticky top-0 md:z-50 bg-white border-b border-zinc-200 dark:border-zinc-800">
+    <div
+      className={`py-2 md:py-5 px-5 md:px-6 dark:bg-zinc-900 dark:text-white w-full ${
+        isChatRoute ? "relative" : "sticky top-0"
+      }  bg-white border-b border-zinc-200 dark:border-zinc-800`}
+    >
       <nav className="navbar flex justify-between items-center flex-row">
         <Link href="/" className="hover:cursor-pointer flex items-center">
           <span className="font-bold md:text-4xl text-3xl">ChatPika</span>

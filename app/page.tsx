@@ -8,7 +8,6 @@ export default function Home() {
   return (
     <div className="relative p-6 w-full min-h-[989px] flex flex-col items-center bg-gradient-to-b from-sky-50 to-white dark:from-zinc-950 dark:to-zinc-900 transition-all ease-in-out">
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.25),transparent_40%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(99,102,241,0.25),transparent_40%)]" />
-      {/* animated, subtle gradient blobs */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 overflow-hidden"

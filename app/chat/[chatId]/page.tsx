@@ -209,7 +209,7 @@ export default function Chat() {
   };
   return (
     <div className="flex flex-col h-[100svh] w-full dark:bg-zinc-900 dark:text-white">
-      <div className="self-stretch">
+      <div className="self-stretch ">
         <div className="relative mt-[-10px] z-10">
           <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
         </div>
@@ -221,7 +221,7 @@ export default function Chat() {
           }}
         />
       ) : (
-        <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 flex-1">
+        <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 flex-1 ">
           <ChatWindow messages={messages} />
         </div>
       )}
