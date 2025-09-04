@@ -250,7 +250,10 @@ export default function Chat() {
                 disabled
                 className="w-15 h-full flex items-center justify-center"
               >
-                <Square size={20} />
+                <div className="bg-gray-300 p-3 rounded-full animate-pulse">
+
+                <Square size={13} fill="black" strokeWidth={0}/>
+                </div>
               </button>
             ) : message.length == 0 ? (
               <button
