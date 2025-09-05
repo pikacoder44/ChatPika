@@ -214,7 +214,7 @@ export default function Chat() {
       handleChat();
     }
   };
-  const [hideAuthModal, setHideAuthModal] = useState(false);
+
 
   return (
     <div className="relative">
@@ -284,9 +284,7 @@ export default function Chat() {
         )}
       </div>
 
-      {!isSignedIn && !hideAuthModal && (
-        <SignInReq onClose={() => setHideAuthModal(true)} />
-      )}
+     
     </div>
   );
 }

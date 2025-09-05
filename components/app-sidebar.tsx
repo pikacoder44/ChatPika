@@ -56,8 +56,7 @@ export function AppSidebar() {
       console.log("rec chat length: ", chats.length);
       console.log("TYPE: ", typeof chats);
     }
-  }, [chats]); 
-  
+  }, [chats]);
 
   // Initialize currentChat from URL params
   useEffect(() => {
@@ -93,6 +92,10 @@ export function AppSidebar() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: `Chat ${chats.length + 1}` }),
       });
+      if (response.status === 401) {
+        console.log("Unauthorized");
+        return;
+      }
       if (result.ok) {
         const chatData = await result.json();
         router.push(`/chat/${chatData._id}`);
@@ -101,7 +104,7 @@ export function AppSidebar() {
         mutate("/api/chats");
       }
     } catch (error) {
-      console.error("Failed to create chat:", error);
+      console.log("Failed to create chat:", error);
     }
   };
 
@@ -210,9 +213,10 @@ export function AppSidebar() {
                 ))
               ) : (
                 <div className="m-2 p-2 flex text-center flex-col">
-
-                <div className="font-bold text-red-500">Nothing received</div>
-                <p className="font-semibold text-zinc-400">Either there are no chats or you are logged out</p>
+                  <div className="font-bold text-red-500">Nothing received</div>
+                  <p className="font-semibold text-zinc-400">
+                    Either there are no chats or you are logged out
+                  </p>
                 </div>
               )}
             </SidebarMenu>
