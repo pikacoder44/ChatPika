@@ -45,7 +45,19 @@ export function AppSidebar() {
   const params = useParams();
   const [currentChat, setCurrentChat] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
+  const [receivedChats, setReceivedChats] = useState([]);
   const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
+  useEffect(() => {
+    if (chats === undefined) {
+      setReceivedChats([]);
+      console.log("Chats are undefined");
+    } else {
+      setReceivedChats(chats);
+      console.log("rec chat length: ", chats.length);
+      console.log("TYPE: ", typeof chats);
+    }
+  }, [chats]); 
+  
 
   // Initialize currentChat from URL params
   useEffect(() => {
@@ -164,37 +176,45 @@ export function AppSidebar() {
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {chats?.map((item) => (
-                <SidebarMenuItem key={item._id}>
-                  <SidebarMenuButton
-                    onClick={() => openChat(item._id)}
-                    disabled={loadingChat === item._id}
-                    className={
-                      currentChat === item._id
-                        ? "bg-zinc-700 text-white border border-zinc-800"
-                        : loadingChat === item._id
-                        ? "dark:bg-zinc-600/50  bg-zinc-900"
-                        : ""
-                    }
-                  >
-                    {loadingChat === item._id ? (
-                      <>
-                        <span className="truncate text-white">
-                          {item.title}
-                        </span>
+              {receivedChats.length > 0 ? (
+                chats?.map((item) => (
+                  <SidebarMenuItem key={item._id}>
+                    <SidebarMenuButton
+                      onClick={() => openChat(item._id)}
+                      disabled={loadingChat === item._id}
+                      className={
+                        currentChat === item._id
+                          ? "bg-zinc-700 text-white border border-zinc-800"
+                          : loadingChat === item._id
+                          ? "dark:bg-zinc-600/50  bg-zinc-900"
+                          : ""
+                      }
+                    >
+                      {loadingChat === item._id ? (
+                        <>
+                          <span className="truncate text-white">
+                            {item.title}
+                          </span>
 
-                        <Loader
-                          color="white"
-                          strokeWidth={2}
-                          className="h-4 w-4 animate-spin "
-                        />
-                      </>
-                    ) : (
-                      <span className="truncate">{item.title}</span>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                          <Loader
+                            color="white"
+                            strokeWidth={2}
+                            className="h-4 w-4 animate-spin "
+                          />
+                        </>
+                      ) : (
+                        <span className="truncate">{item.title}</span>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))
+              ) : (
+                <div className="m-2 p-2 flex text-center flex-col">
+
+                <div className="font-bold text-red-500">Nothing received</div>
+                <p className="font-semibold text-zinc-400">Either there are no chats or you are logged out</p>
+                </div>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

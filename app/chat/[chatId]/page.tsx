@@ -64,6 +64,12 @@ export default function Chat() {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
+      if (response.status === 401) {
+        console.log(
+          "Unauthorized"
+        );
+        return;
+      }
       let chat = await response.json();
       setMessages(
         chat.messages.map((msg: any) => ({
