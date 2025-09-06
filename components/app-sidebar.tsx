@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import useSWR, { mutate } from "swr";
+import SearchModal from "./SearchModal";
 
 const items = [
   {
@@ -21,11 +22,11 @@ const items = [
     url: "/",
     icon: Home,
   },
-
   {
     title: "Search",
     url: "#",
     icon: Search,
+    isSearch: true,
   },
 ];
 
@@ -46,6 +47,7 @@ export function AppSidebar() {
   const [currentChat, setCurrentChat] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
   const [receivedChats, setReceivedChats] = useState([]);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
   useEffect(() => {
     if (chats === undefined) {
@@ -108,6 +110,11 @@ export function AppSidebar() {
     }
   };
 
+  // Handle search button click
+  const handleSearchClick = () => {
+    setIsSearchModalOpen(true);
+  };
+
   if (isLoading) {
     return (
       <Sidebar>
@@ -150,79 +157,93 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleNewChat}>
-                  <Plus />
-                  <span>New Chat</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+    <>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Tools</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={handleNewChat}>
+                    <Plus />
+                    <span>New Chat</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Chats</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {receivedChats.length > 0 ? (
-                chats?.map((item) => (
-                  <SidebarMenuItem key={item._id}>
-                    <SidebarMenuButton
-                      onClick={() => openChat(item._id)}
-                      disabled={loadingChat === item._id}
-                      className={
-                        currentChat === item._id
-                          ? "bg-zinc-700 text-white border border-zinc-800"
-                          : loadingChat === item._id
-                          ? "dark:bg-zinc-600/50  bg-zinc-900"
-                          : ""
-                      }
-                    >
-                      {loadingChat === item._id ? (
-                        <>
-                          <span className="truncate text-white">
-                            {item.title}
-                          </span>
-
-                          <Loader
-                            color="white"
-                            strokeWidth={2}
-                            className="h-4 w-4 animate-spin "
-                          />
-                        </>
-                      ) : (
-                        <span className="truncate">{item.title}</span>
-                      )}
-                    </SidebarMenuButton>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    {item.isSearch ? (
+                      <SidebarMenuButton onClick={handleSearchClick}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton asChild>
+                        <a href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
-                ))
-              ) : (
-                <div className="m-2 p-2 flex text-center flex-col">
-                  <div className="font-bold text-red-500">Nothing received</div>
-                  <p className="font-semibold text-zinc-400">
-                    Either there are no chats or you are logged out
-                  </p>
-                </div>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Chats</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {receivedChats.length > 0 ? (
+                  chats?.map((item) => (
+                    <SidebarMenuItem key={item._id}>
+                      <SidebarMenuButton
+                        onClick={() => openChat(item._id)}
+                        disabled={loadingChat === item._id}
+                        className={
+                          currentChat === item._id
+                            ? "bg-zinc-700 text-white border border-zinc-800"
+                            : loadingChat === item._id
+                            ? "dark:bg-zinc-600/50  bg-zinc-900"
+                            : ""
+                        }
+                      >
+                        {loadingChat === item._id ? (
+                          <>
+                            <span className="truncate text-white">
+                              {item.title}
+                            </span>
+
+                            <Loader
+                              color="white"
+                              strokeWidth={2}
+                              className="h-4 w-4 animate-spin "
+                            />
+                          </>
+                        ) : (
+                          <span className="truncate">{item.title}</span>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                ) : (
+                  <div className="m-2 p-2 flex text-center flex-col">
+                    <div className="font-bold text-red-500">
+                      Nothing received
+                    </div>
+                    <p className="font-semibold text-zinc-400">
+                      Either there are no chats or you are logged out
+                    </p>
+                  </div>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      {isSearchModalOpen && (
+        <SearchModal onClose={() => setIsSearchModalOpen(false)} />
+      )}
+    </>
   );
 }

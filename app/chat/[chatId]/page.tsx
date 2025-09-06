@@ -65,9 +65,7 @@ export default function Chat() {
         headers: { "Content-Type": "application/json" },
       });
       if (response.status === 401) {
-        console.log(
-          "Unauthorized"
-        );
+        console.log("Unauthorized");
         return;
       }
       let chat = await response.json();
@@ -215,7 +213,6 @@ export default function Chat() {
     }
   };
 
-
   return (
     <div className="relative">
       <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
@@ -283,8 +280,6 @@ export default function Chat() {
           </div>
         )}
       </div>
-
-     
     </div>
   );
 }
