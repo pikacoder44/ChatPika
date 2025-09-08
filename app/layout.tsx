@@ -11,15 +11,18 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
-import { shadcn} from "@clerk/themes";
+import { shadcn } from "@clerk/themes";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata = {
@@ -39,20 +42,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider
-    appearance={{
-      baseTheme: shadcn,
-      variables: {
-        colorPrimary: "#3b82f6", // Tailwind blue-500
-      },
-      elements: {
-        userButtonPopoverCard: "max-w-[200px] sm:max-w-[300px]", // smaller on mobile
-        userButtonPopover: "p-2 text-sm", // compact menu
-      },
-    }}
+      appearance={{
+        baseTheme: shadcn,
+        variables: {
+          colorPrimary: "#3b82f6", // Tailwind blue-500
+        },
+        elements: {
+          userButtonPopoverCard: "max-w-[200px] sm:max-w-[300px]", // smaller on mobile
+          userButtonPopover: "p-2 text-sm", // compact menu
+        },
+      }}
     >
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${geistSans.className} antialiased`}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <NavigationLoader />
