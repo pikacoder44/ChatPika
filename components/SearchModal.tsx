@@ -6,7 +6,7 @@ interface SearchModalProps {
 
 const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Search Chats</h2>
@@ -18,7 +18,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
           </button>
         </div>
         <div className="text-center">
-          <p>Search functionality coming soon!</p>
+          <input type="text" name="search" placeholder="search chats..." className="p-2 border-2 m-2 rounded-lg focus:bg-zinc-900 outline-none"/>
+          
+          <p>Chat name</p>
         </div>
       </div>
     </div>
