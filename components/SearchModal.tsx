@@ -78,35 +78,33 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
             <CommandInput placeholder="Search your chats..." />
             <CommandList>
               <CommandGroup heading="Chats:">
-                {chats.length > 0 ? (
-                  chats.map((item) => (
-                    <CommandItem key={item._id}>
-                      <button
-                        onClick={() => openChat(item._id)}
-                        disabled={loadingChat === item._id}
-                      >
-                        {loadingChat === item._id ? (
-                          <div className="flex flex-row gap-2">
-                            <span className="truncate text-white">
-                              {item.title}
-                            </span>
-
-                            <Loader
-                              color="white"
-                              strokeWidth={2}
-                              className="h-4 w-4 animate-spin "
-                            />
-                          </div>
-                        ) : (
-                          <span className="truncate">{item.title}</span>
-                        )}
-                      </button>
-                    </CommandItem>
-                  ))
-                ) : (
-                  <CommandEmpty>No results found.</CommandEmpty>
-                )}
+                {chats.map((item) => (
+                  <CommandItem key={item._id}>
+                    <button
+                      onClick={() => openChat(item._id)}
+                      disabled={loadingChat === item._id}
+                    >
+                      {loadingChat === item._id ? (
+                        <div className="flex flex-row gap-2">
+                          <span className="truncate text-white">
+                            {item.title}
+                          </span>
+                          <Loader
+                            color="white"
+                            strokeWidth={2}
+                            className="h-4 w-4 animate-spin"
+                          />
+                        </div>
+                      ) : (
+                        <span className="truncate">{item.title}</span>
+                      )}
+                    </button>
+                  </CommandItem>
+                ))}
               </CommandGroup>
+
+              {/* Always include this, no condition */}
+              <CommandEmpty>No results found.</CommandEmpty>
             </CommandList>
           </Command>
         )}
