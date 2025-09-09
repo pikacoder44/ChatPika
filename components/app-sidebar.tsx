@@ -89,17 +89,20 @@ export function AppSidebar() {
   // Create new chat
   const handleNewChat = async () => {
     try {
-      const result = await fetch("/api/chats", {
+      // Fallback title if chats are undefined
+      const chatCount = chats ? chats.length + 1 : 1;
+
+      const response = await fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: `Chat ${chats.length + 1}` }),
+        body: JSON.stringify({ title: `Chat ${chatCount}` }),
       });
       if (response.status === 401) {
         console.log("Unauthorized");
         return;
       }
-      if (result.ok) {
-        const chatData = await result.json();
+      if (response.ok) {
+        const chatData = await response.json();
         router.push(`/chat/${chatData._id}`);
         setCurrentChat(chatData._id);
         // Re-fetch chats after creating
