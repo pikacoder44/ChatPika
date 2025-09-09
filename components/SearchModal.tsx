@@ -50,7 +50,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
 
       if (response.ok) {
         router.push(`/chat/${id}`);
-        setCurrentChat(id);
       }
     } catch (error) {
       console.log("Error:", error);
@@ -86,13 +85,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
                     >
                       {loadingChat === item._id ? (
                         <div className="flex flex-row gap-2">
-                          <span className="truncate text-white">
+                          <span className="truncate dark:text-white text-blue-500">
                             {item.title}
                           </span>
                           <Loader
-                            color="white"
                             strokeWidth={2}
-                            className="h-4 w-4 animate-spin"
+                            className="h-4 w-4 animate-spin text-black dark:text-white"
                           />
                         </div>
                       ) : (
