@@ -10,14 +10,17 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { X, Loader } from "lucide-react";
 interface SearchModalProps {
   onClose: () => void;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
+  const router = useRouter();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState<string | null>(null);
   useEffect(() => {
     setLoading(true);
     const getChats = async () => {
@@ -37,6 +40,24 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
     };
     getChats();
   }, []);
+  const openChat = async (id: string) => {
+    try {
+      setLoadingChat(id); // Start loading
+      const response = await fetch(`/api/chats/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        router.push(`/chat/${id}`);
+        setCurrentChat(id);
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setLoadingChat(null); // Stop loading
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-80 flex items-center justify-center backdrop-blur-sm bg-opacity-50">
@@ -60,7 +81,26 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
                 {chats.length > 0 ? (
                   chats.map((item) => (
                     <CommandItem key={item._id}>
-                      <p>{item.title}</p>
+                      <button
+                        onClick={() => openChat(item._id)}
+                        disabled={loadingChat === item._id}
+                      >
+                        {loadingChat === item._id ? (
+                          <div className="flex flex-row gap-2">
+                            <span className="truncate text-white">
+                              {item.title}
+                            </span>
+
+                            <Loader
+                              color="white"
+                              strokeWidth={2}
+                              className="h-4 w-4 animate-spin "
+                            />
+                          </div>
+                        ) : (
+                          <span className="truncate">{item.title}</span>
+                        )}
+                      </button>
                     </CommandItem>
                   ))
                 ) : (
