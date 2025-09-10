@@ -64,7 +64,7 @@ const ChatPage = () => {
 
         setRecentChats(data);
       } catch (error) {
-        console.error("Failed to fetch chats:", error);
+        console.log("Failed to fetch chats:", error);
       } finally {
         setLoading(false);
       }
@@ -88,9 +88,7 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.log("Error:", error);
-    } finally {
-      // console.log(chat);
-    }
+    } 
   };
 
   return (

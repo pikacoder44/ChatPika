@@ -10,9 +10,10 @@ export async function POST(req: Request) {
 
     const user = await currentUser();
 
-    if (!user)
+    if (!user) {
+      console.log("Unauthorized, Login first");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    
+    }
 
     let dbUser = await User.findOne({ clerkId: user.id });
 
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title } = body;
 
-  
     const chat = await Chat.create({
       userId: dbUser.clerkId,
       title,
@@ -46,11 +46,16 @@ export async function GET() {
   try {
     await connectDB();
     const user = await currentUser();
-    if (!user)
+    if (!user) {
+      console.log("Unauthorized, Login first");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const dbUser = await User.findOne({ clerkId: user.id });
-    if (!dbUser) return NextResponse.json([]);
+    if (!dbUser) {
+      console.log("User not found in Database");
+      return NextResponse.json([]);
+    }
 
     const chats = await Chat.find({ userId: dbUser.clerkId }).sort({
       createdAt: -1,
