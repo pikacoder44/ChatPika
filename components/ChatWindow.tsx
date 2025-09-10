@@ -4,8 +4,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useRef, useEffect } from "react";
-
-const ChatWindow = ({ messages }) => {
+import TypingIndicator from "./TypingIndicator";
+const ChatWindow = ({ messages, streaming }) => {
   const scrollAreaRef = useRef(null);
 
   // Auto-scroll to bottom when messages change
@@ -132,6 +132,14 @@ const ChatWindow = ({ messages }) => {
               </div>
             </div>
           ))}
+          {/* Typing Indicator */}
+          {streaming && (
+            <div className="flex justify-start">
+              <div className="px-4 py-2 rounded-xl md:max-w-[70%] my-1 max-w-[90%] dark:bg-zinc-800 bg-gray-200 dark:text-white text-black">
+                <TypingIndicator />
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea.Viewport>
 

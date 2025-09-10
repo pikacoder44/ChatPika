@@ -19,6 +19,7 @@ export default function Chat() {
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [titleGenerated, setTitleGenerated] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -143,6 +144,7 @@ export default function Chat() {
     if (!message.trim()) return;
 
     setLoading(true);
+    setIsStreaming(true);
 
     // Add user message
     const userMessage: Message = {
@@ -168,6 +170,7 @@ export default function Chat() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
+      let gotFirstChunk = false;
       // Add empty assistant message once
       const assistantId = generateId();
       setMessages((prev) => [
@@ -183,6 +186,11 @@ export default function Chat() {
 
         const chunk = decoder.decode(value, { stream: true });
 
+        // First non-empty chunk → stop typing dots
+        if (!gotFirstChunk && chunk.trim() !== "") {
+          setIsStreaming(false);
+          gotFirstChunk = true;
+        }
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === assistantId
@@ -201,6 +209,9 @@ export default function Chat() {
           content: "Error: " + error.message,
         },
       ]);
+    } finally {
+      setIsStreaming(false);
+      setLoading(false);
     }
 
     setLoading(false);
@@ -229,7 +240,7 @@ export default function Chat() {
           />
         ) : (
           <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
-            <ChatWindow messages={messages} />
+            <ChatWindow messages={messages} streaming={isStreaming} />
           </div>
         )}
         {mounted && (
