@@ -271,10 +271,9 @@ body,
 }
 
 .cta {
-  @apply  bg-gradient-to-t from-blue-600 via-blue-200 to-blue-100  hover:bg-gradient-to-l hover:from-blue-400 hover:via-blue-600 hover:to-blue-700 hover:text-white text-black hover:shadow-2xl;
-  
+  @apply bg-gradient-to-t from-blue-600 via-blue-200 to-blue-100  hover:bg-gradient-to-l hover:from-blue-400 hover:via-blue-600 hover:to-blue-700 hover:text-white text-black hover:shadow-2xl;
 }
 
 .cta-dark {
-  @apply  dark:bg-gradient-to-t dark:from-blue-900 dark:via-blue-700 dark:to-blue-300 dark:hover:bg-gradient-to-l dark:hover:from-blue-700 dark:hover:to-blue-900 dark:hover:text-white dark:text-white sm:dark:text-black dark:hover:shadow-2xl;
+  @apply dark:bg-gradient-to-t dark:from-blue-900 dark:via-blue-700 dark:to-blue-300 dark:hover:bg-gradient-to-l dark:hover:from-blue-700 dark:hover:to-blue-900 dark:hover:text-white dark:text-white sm:dark:text-black dark:hover:shadow-2xl;
 }
