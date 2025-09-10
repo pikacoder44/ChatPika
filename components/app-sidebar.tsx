@@ -198,6 +198,7 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {receivedChats.length > 0 ? (
+                  Array.isArray(chats) &&
                   chats?.map((item) => (
                     <SidebarMenuItem key={item._id}>
                       <SidebarMenuButton
