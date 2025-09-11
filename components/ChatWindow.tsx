@@ -1,6 +1,5 @@
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// Import different themes - choose one you like:
 import { materialOceanic } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useRef, useEffect } from "react";
