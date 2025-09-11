@@ -21,12 +21,12 @@ Supports streaming AI responses, saved chat history, and a sleek dark-mode UI.
 - **Auth**: Clerk  
 - **Database**: MongoDB + Mongoose  
 - **AI**: Google Gemini (`@google/generative-ai`)  
-- **UI Utils**: Radix, shadcn patterns, `clsx`, `react-markdown`, `react-syntax-highlighter`, `swr`  
+- **UI Utils**: Radix, shadcn patterns, `react-markdown`, `react-syntax-highlighter`, `swr`  
 
 ---
 
 ## 🔌 API Routes
-- `POST /api/ai/chat` → Stream AI reply (+ save to chat if signed in)  
+- `POST /api/ai/chat` → Stream AI reply (+ save to chat)  
 - `POST /api/ai/generatetitle` → Generate a short chat title  
 - `POST /api/chats` → Create a chat  
 - `GET /api/chats` → List user’s chats  
@@ -34,19 +34,6 @@ Supports streaming AI responses, saved chat history, and a sleek dark-mode UI.
 
 ---
 
-## 🗃️ Data Models
-**User**  
-- `clerkId: string`  
-- `email: string`  
-- `createdAt: Date`  
-
-**Chat**  
-- `userId: string`  
-- `title: string`  
-- `messages: { role: "user" | "assistant", content: string, timestamp: Date }[]`  
-- `createdAt: Date`  
-
----
 
 ## 🧰 Getting Started
 
@@ -59,11 +46,11 @@ Supports streaming AI responses, saved chat history, and a sleek dark-mode UI.
 ### 2. Install
 ```bash
 npm install
-
+```
 
 #### 3) Environment
-Create `.env.local` in the project root:
 ```bash
+Create `.env.local` in the project root:
 # AI
 GEMINI_API_KEY=your_gemini_api_key
 
@@ -74,15 +61,11 @@ MONGODB_URI=your_mongodb_connection_string
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
 CLERK_SECRET_KEY=sk_test_xxx
 
-# (optional if using custom routes)
-# NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-# NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 ```
 
 #### 4) Run (Dev)
 ```bash
 npm run dev
-# http://localhost:3000
 ```
 
 #### 5) Build & Start (Prod)
