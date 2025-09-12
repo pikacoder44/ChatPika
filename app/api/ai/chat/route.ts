@@ -3,15 +3,9 @@ import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-import User from "@/lib/models/User";
+import User, { IUser } from "@/lib/models/User";
 import Chat from "@/lib/models/Chat";
 import mongoose, { Model, Document } from "mongoose";
-
-interface IUser extends Document {
-  clerkId: string;
-  email?: string;
-  createdAt: Date;
-}
 
 export async function POST(req: Request) {
   try {
@@ -28,11 +22,11 @@ export async function POST(req: Request) {
     let dbUser = null;
 
     if (user) {
-      dbUser = await (User as mongoose.Model<IUser>).findOne({
+      dbUser = await User.findOne({
         clerkId: user.id,
       });
       if (!dbUser) {
-        dbUser = await (User as Model<IUser>).create({
+        dbUser = await User.create({
           clerkId: user.id,
           email: user.emailAddresses[0].emailAddress,
         });
