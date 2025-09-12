@@ -5,6 +5,13 @@ import { NextResponse } from "next/server";
 
 import User from "@/lib/models/User";
 import Chat from "@/lib/models/Chat";
+import mongoose, { Model, Document } from "mongoose";
+
+interface IUser extends Document {
+  clerkId: string;
+  email?: string;
+  createdAt: Date;
+}
 
 export async function POST(req: Request) {
   try {
@@ -21,9 +28,11 @@ export async function POST(req: Request) {
     let dbUser = null;
 
     if (user) {
-      dbUser = await User.findOne({ clerkId: user.id });
+      dbUser = await (User as mongoose.Model<IUser>).findOne({
+        clerkId: user.id,
+      });
       if (!dbUser) {
-        dbUser = await User.create({
+        dbUser = await (User as Model<IUser>).create({
           clerkId: user.id,
           email: user.emailAddresses[0].emailAddress,
         });
