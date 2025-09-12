@@ -31,13 +31,10 @@ export default function Chat() {
   const params = useParams();
   const chatId = params.chatId as string;
 
-  function PromptReader() {
+
     const searchParams = useSearchParams();
     const prompt = searchParams.get("prompt");
-    console.log("Prompt:", prompt);
-
-    return null;
-  }
+ 
 
   useEffect(() => {
     setMounted(true);
@@ -231,9 +228,9 @@ export default function Chat() {
 
   return (
     <div className="relative">
-      <Suspense fallback={null}>
-        <PromptReader />
-      </Suspense>
+      
+   
+      
       <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
         <div className="self-stretch ">
           <div className="fixed mt-[-10px] z-50">
