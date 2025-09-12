@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 import User, { IUser } from "@/lib/models/User";
-import Chat from "@/lib/models/Chat";
+import Chat, { IChat } from "@/lib/models/Chat";
 import mongoose, { Model, Document } from "mongoose";
 
 export async function POST(req: Request) {
