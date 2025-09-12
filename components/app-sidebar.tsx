@@ -30,7 +30,8 @@ const items = [
   },
 ];
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (...args: [RequestInfo, RequestInit?]) =>
+  fetch(...args).then((res) => res.json());
 
 // Skeleton component for chat items
 const ChatSkeleton = () => (
