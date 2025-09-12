@@ -2,16 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import NavigationLoader from "@/components/NavigationProgress";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import { ThemeProvider } from "next-themes";
-import { shadcn } from "@clerk/themes";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,29 +32,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: shadcn,
-        variables: {
-          colorPrimary: "#3b82f6", // Tailwind blue-500
-        },
-        elements: {
-          userButtonPopoverCard: "max-w-[200px] sm:max-w-[300px]", // smaller on mobile
-          userButtonPopover: "p-2 text-sm", // compact menu
-        },
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} ${geistSans.className} antialiased`}
-        >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <NavigationLoader />
-            <Navbar />
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${geistSans.className} antialiased`}
+      >
+        <Providers>
+          <NavigationLoader />
+          <Navbar />
+          {children}
+        </Providers>
+      </body>
+    </html>
   );
 }
