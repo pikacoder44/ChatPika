@@ -86,7 +86,7 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle />
             <SignedOut>
-              <SignInButton className="hover:text-green-500 cursor-pointer" />
+              <SignInButton />
               <SignUpButton>
                 <button className="bg-[#13d75e] hover:bg-[#342b54] hover:text-white text-black rounded-full font-medium text-sm px-4 h-10 cursor-pointer transition-colors">
                   Get Started
