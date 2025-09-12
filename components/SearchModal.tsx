@@ -32,7 +32,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
         const data = await response.json();
         setChats(data);
         console.log(data);
-      } else if (response.status === "401") {
+      } else if (response.status === 401) {
         alert("Unauthorized");
         console.log("Unauthorized");
       }
