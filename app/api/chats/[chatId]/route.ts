@@ -1,15 +1,18 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import Chat from "@/lib/models/Chat";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request,   { params }: { params: { chatId: string } }) {
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ chatId: string }> }
+) {
   try {
-    const { chatId } = await params;
+    const { chatId } = await context.params;
     await connectDB();
     const user = await currentUser();
     console.log("Chat Id: ", chatId);
-    
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -21,7 +24,8 @@ export async function GET(req: Request,   { params }: { params: { chatId: string
     }
 
     // Check if user owns this chat
-    if (chat.userId !== user.id) { // This should work since chat.userId stores clerkId
+    if (chat.userId !== user.id) {
+      // This should work since chat.userId stores clerkId
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
