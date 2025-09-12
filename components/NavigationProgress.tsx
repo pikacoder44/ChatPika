@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const NavigationLoader = () => {
@@ -22,7 +22,7 @@ const NavigationLoader = () => {
   if (!isVisible) return null;
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    
       <div className="fixed inset-0 z-[60] pointer-events-none flex items-center justify-center">
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/10 dark:bg-black/7  backdrop-blur-[2px]" />
@@ -39,7 +39,7 @@ const NavigationLoader = () => {
           </svg>
         </div>
       </div>
-    </Suspense>
+
   );
 };
 
