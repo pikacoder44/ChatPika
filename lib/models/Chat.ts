@@ -1,13 +1,15 @@
 import mongoose, { Model, Document } from "mongoose";
 
+export interface IMsg {
+  role: string;
+  content: string;
+  timestamp?: Date;
+}
+
 export interface IChat extends Document {
   userId: string;
   title?: string;
-  messages: Array[{
-    role: String;
-    content: String;
-    timestamp?: Date;
-  }];
+  messages: IMsg[];
   createdAt?: Date;
 }
 const ChatSchema = new mongoose.Schema<IChat>({
