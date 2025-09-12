@@ -142,7 +142,7 @@ const Navbar = () => {
               <SignedOut>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <SignInButton className="w-full text-left" />
+                  <SignInButton />
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <SignUpButton>
