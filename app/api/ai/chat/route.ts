@@ -103,9 +103,8 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   } catch (error) {
-    console.error("Error in chat route:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Service temporarily unavailable" },
       { status: 500 }
     );
   }

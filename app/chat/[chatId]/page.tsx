@@ -23,6 +23,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [titleGenerated, setTitleGenerated] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastInput, setLastInput] = useState(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   //Detect if a user is logged in (via Clerk).
@@ -31,10 +33,8 @@ export default function Chat() {
   const params = useParams();
   const chatId = params.chatId as string;
 
-
-    const searchParams = useSearchParams();
-    const prompt = searchParams.get("prompt");
- 
+  const searchParams = useSearchParams();
+  const prompt = searchParams.get("prompt");
 
   useEffect(() => {
     setMounted(true);
@@ -142,57 +142,67 @@ export default function Chat() {
       });
   };
 
-  const handleChat = async () => {
-    if (!message.trim()) return;
+  const handleChat = async (input?: string) => {
+    const text = input ?? message;
+
+    if (!text || typeof text !== "string" || !text.trim()) return;
 
     setLoading(true);
     setIsStreaming(true);
+    setError(null);
+    setLastInput(text);
 
     // Add user message
     const userMessage: Message = {
       id: generateId(),
       role: "user",
-      content: message,
+      content: text,
     };
     setMessages((prev) => [...prev, userMessage]);
-    setMessage("");
-    console.log("Prompt: ", prompt);
+    setMessage(""); // clear input
+
     try {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message,
+          message: text,
           chatId: isSignedIn ? chatId : undefined,
         }),
       });
 
       if (!res.body) throw new Error("No response body");
+      if (res.status === 503) {
+        setError(
+          "⚠️ Service is temporarily unavailable. Please try again later."
+        );
+        return;
+      }
+      if (!res.ok) {
+        setError(`⚠️ Error ${res.status}: ${res.statusText}`);
+        return;
+      }
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-
-      let gotFirstChunk = false;
-      // Add empty assistant message once
       const assistantId = generateId();
+
       setMessages((prev) => [
         ...prev,
         { id: assistantId, role: "assistant", content: "" },
       ]);
 
-      console.log("Chat ID: ", chatId);
-      // Stream chunks
+      let gotFirstChunk = false;
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-
-        // First non-empty chunk → stop typing dots
         if (!gotFirstChunk && chunk.trim() !== "") {
           setIsStreaming(false);
           gotFirstChunk = true;
         }
+
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === assistantId
@@ -215,9 +225,13 @@ export default function Chat() {
       setIsStreaming(false);
       setLoading(false);
     }
-
-    setLoading(false);
   };
+
+  function handleRetry() {
+    if (lastInput) {
+      handleChat(lastInput); // 🔄 directly send last input
+    }
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -228,9 +242,6 @@ export default function Chat() {
 
   return (
     <div className="relative">
-      
-   
-      
       <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
         <div className="self-stretch ">
           <div className="fixed mt-[-10px] z-50">
@@ -245,7 +256,12 @@ export default function Chat() {
           />
         ) : (
           <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
-            <ChatWindow messages={messages} streaming={isStreaming} />
+            <ChatWindow
+              messages={messages}
+              streaming={isStreaming}
+              error={error}
+              onRetry={handleRetry}
+            />
           </div>
         )}
         {mounted && (
@@ -286,7 +302,7 @@ export default function Chat() {
                 </button>
               ) : (
                 <button
-                  onClick={handleChat}
+                  onClick={() => handleChat(message)}
                   className="w-15 h-full flex items-center justify-center"
                 >
                   <SendHorizonal size={25} />

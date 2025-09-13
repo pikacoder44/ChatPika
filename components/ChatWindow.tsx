@@ -2,9 +2,11 @@ import ReactMarkdown, { Components } from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import TypingIndicator from "./TypingIndicator";
-const ChatWindow = ({ messages, streaming }) => {
+import { RefreshCw } from "lucide-react";
+
+const ChatWindow = ({ messages, streaming, error, onRetry }) => {
   const scrollAreaRef = useRef(null);
 
   // Auto-scroll to bottom when messages change
@@ -101,7 +103,7 @@ const ChatWindow = ({ messages, streaming }) => {
   return (
     <ScrollArea.Root
       ref={scrollAreaRef}
-      className=" ScrollAreaRoot w-full m-0 h-full min-h-0 rounded-md overflow-hidden"
+      className=" ScrollAreaRoot w-full m-0 h-full min-h-0 rounded-md overflow-hidden transition-all ease-in-out"
     >
       <ScrollArea.Viewport className="ScrollAreaViewport w-full h-full md:p-3 m-0 pb-28 sm:pb-4">
         <div className="md:w-[60%] w-full mx-auto flex flex-col gap-3 p-3 rounded-md ">
@@ -115,8 +117,8 @@ const ChatWindow = ({ messages, streaming }) => {
               <div
                 className={`px-4 py-2 rounded-xl md:max-w-[70%] my-1 max-w-[90%] break-words ${
                   msg.role === "user"
-                    ? "dark:bg-blue-500 bg-blue-50 text-black dark:text-white shadow-[35px_23px_51px_-27px_rgba(0,_0,_0,_0.1)]"
-                    : "dark:bg-zinc-800 bg-gray-200 dark:text-white text-black"
+                    ? "dark:bg-blue-500 bg-blue-50 text-black dark:text-white shadow-xl"
+                    : "dark:bg-zinc-800 bg-gray-200 dark:text-white text-black shadow-xl"
                 }`}
               >
                 <ReactMarkdown components={markdownComponents}>
@@ -125,6 +127,23 @@ const ChatWindow = ({ messages, streaming }) => {
               </div>
             </div>
           ))}
+          {/* Error message bubble */}
+          {error && (
+            <div className="flex justify-start">
+              <div className="flex flex-col items-start">
+                <div className="px-4 py-2 rounded-xl md:max-w-[70%] my-1 max-w-[90%] bg-red-500 border-1 shadow-xl dark:bg-red-900 dark:text-white text-white">
+                  <ReactMarkdown>{error}</ReactMarkdown>
+                </div>
+                <div className="bg-gray-300 px-2  rounded-lg dark:text-black hover:bg-zinc-950 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all delay-75 ease-in-out">
+                  <button onClick={onRetry} className="cursor-pointer">
+                    <div className="flex flex-row gap-1 m-2 text-sm items-center">
+                      <RefreshCw size={15} strokeWidth={2} /> Retry
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Typing Indicator */}
           {streaming && (
             <div className="flex justify-start">
