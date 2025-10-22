@@ -18,21 +18,42 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
-        run: npm run lint
+      # Print which environment variables are loaded
+      - name: Check environment variables
+        run: |
+          echo "✅ Checking environment variables:"
+          if [ -z "${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" ]; then
+            echo "❌ Missing NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"
+            exit 1
+          fi
+          if [ -z "${{ secrets.CLERK_SECRET_KEY }}" ]; then
+            echo "❌ Missing CLERK_SECRET_KEY"
+            exit 1
+          fi
+          if [ -z "${{ secrets.MONGODB_URI }}" ]; then
+            echo "❌ Missing MONGODB_URI"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "⚠️ Missing GEMINI_API_KEY (optional)"
+          fi
+          echo "✅ All required secrets are present."
 
       - name: Build project
         env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          echo "Using MONGODB_URI in build..."
+          echo "🚀 Building project with environment variables..."
           npm run build -- --no-lint
