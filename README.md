@@ -19,7 +19,7 @@ Supports streaming AI responses, saved chat history, and a sleek dark-mode UI.
 - **Framework**: Next.js 15, React 19  
 - **Styling**: Tailwind v4  
 - **Auth**: Clerk  
-- **Database**: MongoDB 
+- **Database**: MongoDB + Mongoose 
 - **AI**: Google Gemini (`@google/generative-ai`)  
 - **UI Utils**: Radix, shadcn patterns, `react-markdown`, `react-syntax-highlighter`, `swr`  
 
