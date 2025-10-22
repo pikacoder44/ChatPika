@@ -25,6 +25,8 @@ jobs:
         run: npm run lint
 
       - name: Build project
-        run: npm run build
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          echo "Using MONGODB_URI in build..."
+          npm run build -- --no-lint
