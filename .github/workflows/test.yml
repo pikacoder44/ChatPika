@@ -26,7 +26,10 @@ jobs:
 
       - name: Build project
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
-          echo "Using MONGODB_URI in build..."
+          echo "Using environment variables in build..."
           npm run build -- --no-lint
