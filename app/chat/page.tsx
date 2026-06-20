@@ -63,6 +63,7 @@ const ChatPage = () => {
         let data = await result.json();
 
         setRecentChats(data);
+        console.log("Recent Chats:", data);
       } catch (error) {
         console.log("Failed to fetch chats:", error);
       } finally {
