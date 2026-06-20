@@ -249,11 +249,11 @@ export default function Chat() {
           </div>
         </div>
         {messages.length === 0 ? (
-          <WelcomeChat
-            onPick={(m) => {
-              setMessage(m);
-            }}
-          />
+          <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
+            <div className="text-center text-gray-500 dark:text-gray-400">
+              No messages in this chat yet. Start typing!
+            </div>
+          </div>
         ) : (
           <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
             <ChatWindow
