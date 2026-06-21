@@ -89,18 +89,18 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.log("Error:", error);
-    } 
+    }
   };
 
   return (
     <div className="relative">
-      <div className="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900 ">
+      <div className="bg-linear-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900 ">
         {/* Main Content */}
         <div className="flex flex-col items-center justify-center flex-1 px-6 py-16">
           <div className="max-w-4xl w-full text-center">
             {/* Welcome Section */}
             <div className="mb-12">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
                 <MessageSquare className="h-10 w-10 text-white" />
               </div>
               <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -117,7 +117,7 @@ const ChatPage = () => {
               <button
                 onClick={handleNewChat}
                 disabled={isCreating}
-                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isCreating ? (
                   <>
@@ -154,7 +154,7 @@ const ChatPage = () => {
                       className="group p-4 text-left bg-white/60 shadow dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                        <div className="shrink-0 w-8 h-8 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                           <Sparkles className="h-4 w-4 text-white" />
                         </div>
                         <div className="flex-1">

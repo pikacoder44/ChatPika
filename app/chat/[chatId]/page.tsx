@@ -55,7 +55,7 @@ export default function Chat() {
     }
     // Fallback: generate UUID manually
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16 | 0;
+      const r = (crypto.getRandomValues(new Uint8Array(1))[0] % 16) | 0;
       const v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
@@ -77,7 +77,7 @@ export default function Chat() {
           id: msg._id,
           role: msg.role,
           content: msg.content,
-        }))
+        })),
       );
       // If chat already has messages, mark title as generated
       if (chat.messages.length > 0) {
@@ -108,10 +108,10 @@ export default function Chat() {
           });
           if (response.status === 429) {
             alert(
-              "Can't generate title.You have reached the maximum number of requests. Please try again later."
+              "Can't generate title.You have reached the maximum number of requests. Please try again later.",
             );
             console.log(
-              "Can't generate title. You have reached the maximum number of requests. Please try again later."
+              "Can't generate title. You have reached the maximum number of requests. Please try again later.",
             );
             return;
           }
@@ -174,7 +174,7 @@ export default function Chat() {
       if (!res.body) throw new Error("No response body");
       if (res.status === 503) {
         setError(
-          "⚠️ Service is temporarily unavailable. Please try again later."
+          "⚠️ Service is temporarily unavailable. Please try again later.",
         );
         return;
       }
@@ -207,8 +207,8 @@ export default function Chat() {
           prev.map((msg) =>
             msg.id === assistantId
               ? { ...msg, content: msg.content + chunk }
-              : msg
-          )
+              : msg,
+          ),
         );
       }
     } catch (error: any) {
@@ -242,9 +242,9 @@ export default function Chat() {
 
   return (
     <div className="relative">
-      <div className="flex flex-col h-[100svh] w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
+      <div className="flex flex-col h-svh w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
         <div className="self-stretch ">
-          <div className="fixed mt-[-10px] z-50">
+          <div className="fixed -mt-2.5 z-50">
             <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
           </div>
         </div>
