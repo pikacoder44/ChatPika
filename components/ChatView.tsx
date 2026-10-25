@@ -22,6 +22,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isLoadingChat, setIsLoadingChat] = useState<boolean>(Boolean(initialChatId));
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatTitle, setChatTitle] = useState("New Chat");
   const [titleGenerated, setTitleGenerated] = useState(false);
@@ -38,6 +39,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   // Reset all state when user triggers "+ New Chat"
   const handleResetToNewChat = () => {
     setActiveChatId(null);
+    setIsLoadingChat(false);
     setMessages([]);
     setMessage("");
     setChatTitle("New Chat");
@@ -58,6 +60,8 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     setActiveChatId(initialChatId || null);
     if (!initialChatId) {
       handleResetToNewChat();
+    } else {
+      setIsLoadingChat(true);
     }
   }, [initialChatId]);
 
@@ -86,11 +90,16 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
 
   useEffect(() => {
     const dbDataLoad = async () => {
-      if (!activeChatId) return;
-      if (skipNextFetchRef.current) {
-        skipNextFetchRef.current = false;
+      if (!activeChatId) {
+        setIsLoadingChat(false);
         return;
       }
+      if (skipNextFetchRef.current) {
+        skipNextFetchRef.current = false;
+        setIsLoadingChat(false);
+        return;
+      }
+      setIsLoadingChat(true);
       try {
         const response = await fetch(`/api/chats/${activeChatId}`, {
           method: "GET",
@@ -115,6 +124,8 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
         }
       } catch (err) {
         console.error("Failed to load chat:", err);
+      } finally {
+        setIsLoadingChat(false);
       }
     };
 
@@ -288,7 +299,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   };
 
   const isGenerating = loading || isStreaming;
-  const showWelcome = messages.length === 0 && !isGenerating;
+  const showWelcome = !activeChatId && messages.length === 0 && !isGenerating && !isLoadingChat;
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
@@ -308,7 +319,14 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
 
       {/* Main Conversation Stream */}
       <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative z-10">
-        {showWelcome ? (
+        {isLoadingChat ? (
+          <div className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+              <p className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">Loading chat...</p>
+            </div>
+          </div>
+        ) : showWelcome ? (
           <WelcomeChat onPick={(m) => setMessage(m)} />
         ) : (
           <ChatWindow
