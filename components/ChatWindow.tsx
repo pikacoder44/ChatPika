@@ -158,11 +158,11 @@ const ResponseActions = ({ content, onRetry }: MessageActionsProps) => {
 };
 
 const ChatWindow = ({ messages, streaming, error, onRetry }: any) => {
-  const endRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Smooth scroll to bottom when a new message or token arrives
+  // Auto-scroll to bottom marker on new message or stream chunk
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streaming]);
 
   const markdownComponents: Components = {
@@ -246,7 +246,7 @@ const ChatWindow = ({ messages, streaming, error, onRetry }: any) => {
   return (
     <div
       data-lenis-prevent
-      className="w-full h-full min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 py-6 scroll-smooth"
+      className="flex-1 w-full h-full min-h-0 overflow-y-auto px-4 sm:px-6 py-6 scroll-smooth space-y-6"
     >
       <div className="max-w-3xl w-full mx-auto space-y-6 pb-28">
         {messages.map((msg: any, index: number) => {
@@ -359,7 +359,7 @@ const ChatWindow = ({ messages, streaming, error, onRetry }: any) => {
         )}
 
         {/* Scroll anchor */}
-        <div ref={endRef} />
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );

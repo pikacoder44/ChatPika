@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import WorkspaceHeader from "@/components/WorkspaceHeader";
-import SmoothScroll from "@/components/SmoothScroll";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { mutate } from "swr";
@@ -246,19 +245,17 @@ export default function Chat() {
         onExport={handleExport}
       />
 
-      {/* Main Conversation Stream Wrapped in SmoothScroll */}
+      {/* Main Conversation Stream */}
       <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative z-10">
         {messages.length === 0 ? (
           <WelcomeChat onPick={(m) => setMessage(m)} />
         ) : (
-          <SmoothScroll className="w-full h-full min-h-0 flex-1 overflow-hidden">
-            <ChatWindow
-              messages={messages}
-              streaming={isStreaming}
-              error={error}
-              onRetry={handleRetry}
-            />
-          </SmoothScroll>
+          <ChatWindow
+            messages={messages}
+            streaming={isStreaming}
+            error={error}
+            onRetry={handleRetry}
+          />
         )}
       </div>
 
