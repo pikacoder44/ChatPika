@@ -90,6 +90,9 @@ export function AppSidebar() {
 
   const handleNewChat = () => {
     setCurrentChat(null);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("chat:new"));
+    }
     router.push("/chat");
   };
 

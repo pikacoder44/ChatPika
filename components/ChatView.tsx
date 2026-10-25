@@ -32,13 +32,32 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
 
   const { isSignedIn } = useUser();
 
+  // Ref to track if we just created a chat locally to prevent dbDataLoad from clearing optimistic messages
+  const skipNextFetchRef = useRef(false);
+
+  // Reset all state when user triggers "+ New Chat"
+  const handleResetToNewChat = () => {
+    setActiveChatId(null);
+    setMessages([]);
+    setMessage("");
+    setChatTitle("New Chat");
+    setTitleGenerated(false);
+    setError(null);
+    skipNextFetchRef.current = false;
+  };
+
+  // Listen for global "chat:new" event dispatched from sidebar or keyboard shortcuts
+  useEffect(() => {
+    const onNewChatEvent = () => handleResetToNewChat();
+    window.addEventListener("chat:new", onNewChatEvent);
+    return () => window.removeEventListener("chat:new", onNewChatEvent);
+  }, []);
+
   // Keep activeChatId synced when initialChatId prop changes (e.g. navigation)
   useEffect(() => {
     setActiveChatId(initialChatId || null);
     if (!initialChatId) {
-      setMessages([]);
-      setChatTitle("New Chat");
-      setTitleGenerated(false);
+      handleResetToNewChat();
     }
   }, [initialChatId]);
 
@@ -68,6 +87,10 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   useEffect(() => {
     const dbDataLoad = async () => {
       if (!activeChatId) return;
+      if (skipNextFetchRef.current) {
+        skipNextFetchRef.current = false;
+        return;
+      }
       try {
         const response = await fetch(`/api/chats/${activeChatId}`, {
           method: "GET",
@@ -78,7 +101,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
           const chat = await response.json();
           if (chat) {
             if (chat.title) setChatTitle(chat.title);
-            if (chat.messages) {
+            if (chat.messages && chat.messages.length > 0) {
               setMessages(
                 chat.messages.map((msg: any) => ({
                   id: msg._id,
@@ -86,9 +109,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
                   content: msg.content,
                 }))
               );
-              if (chat.messages.length > 0) {
-                setTitleGenerated(true);
-              }
+              setTitleGenerated(true);
             }
           }
         }
@@ -139,6 +160,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     setError(null);
     setLastInput(text);
 
+    // 1. Optimistic UI update: Immediately append user message & clear input
     const userMessage: Message = {
       id: generateId(),
       role: "user",
@@ -150,7 +172,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     let currentId = activeChatId;
 
     try {
-      // Lazy Chat Creation: If chatId is null, create record now with first prompt as title
+      // Lazy Chat Creation: If chatId is null, create record now
       if (!currentId && isSignedIn) {
         const titleSnippet = text.trim().slice(0, 40);
         const createRes = await fetch("/api/chats", {
@@ -162,9 +184,9 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
         if (createRes.ok) {
           const newChat = await createRes.json();
           currentId = newChat._id;
+          skipNextFetchRef.current = true; // Prevent dbDataLoad from wiping optimistic messages
           setActiveChatId(currentId);
           setChatTitle(newChat.title || titleSnippet);
-          // Silently update browser URL without re-rendering or losing state
           window.history.pushState(null, "", `/chat/${currentId}`);
           mutate("/api/chats");
         }
@@ -189,6 +211,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
       const decoder = new TextDecoder();
       const assistantId = generateId();
 
+      // Append assistant message container to the same local messages array
       setMessages((prev) => [
         ...prev,
         { id: assistantId, role: "assistant", content: "" },
@@ -264,6 +287,9 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     }
   };
 
+  const isGenerating = loading || isStreaming;
+  const showWelcome = messages.length === 0 && !isGenerating;
+
   return (
     <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
       {/* Subtle fine dot grid */}
@@ -282,7 +308,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
 
       {/* Main Conversation Stream */}
       <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative z-10">
-        {messages.length === 0 ? (
+        {showWelcome ? (
           <WelcomeChat onPick={(m) => setMessage(m)} />
         ) : (
           <ChatWindow
