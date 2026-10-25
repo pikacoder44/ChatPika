@@ -1,34 +1,55 @@
 "use client";
 
-import CTA from "@/components/CallToAction";
+import React from "react";
+import CallToAction from "@/components/CallToAction";
 import Features from "@/components/FeaturesSection";
 import { Footer } from "@/components/Footer";
 import Stats from "@/components/StatsSection";
+import { motion } from "framer-motion";
+
 export default function Home() {
   return (
-    <div className="relative p-6 w-full min-h-247.25 flex flex-col items-center bg-linear-to-b from-sky-50 to-white dark:from-zinc-950 dark:to-zinc-900 transition-all ease-in-out">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.25),transparent_40%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(99,102,241,0.25),transparent_40%)]" />
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 overflow-x-hidden selection:bg-yellow-200 selection:text-zinc-950 transition-colors duration-200">
+      {/* Subtle fine grid pattern */}
       <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      >
-        <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-sky-400/30 blur-3xl animate-pulse [animation-duration-[6s]]" />
-        <div className="absolute top-40 -right-16 h-80 w-80 rounded-full bg-violet-400/25 blur-3xl animate-pulse [animation-duration-[7s]] [animation-delay-[1.5s]]" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-96 w-96 rounded-full bg-indigo-400/20 blur-3xl animate-pulse [animation-duration-[8s]] [animation-delay-[3s]]" />
-      </div>
-      <div className="relative z-10 flex w-full flex-col text-center items-center">
-        <h1 className="md:text-6xl text-4xl md:mt-10 mt-3 font-extrabold tracking-tight bg-linear-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
-          Chat with your personal AI assistant
-        </h1>
-        <p className="md:mt-3 md:text-2xl mt-1 text-md text-slate-600 dark:text-slate-300">
-          “Built with Next.js + AI”
-        </p>
-        <CTA />
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-grid-pattern opacity-60"
+      />
 
+      {/* Main Content Area */}
+      <main className="relative z-10 w-full flex flex-col items-center pt-16 sm:pt-24 px-4 max-w-6xl mx-auto">
+        {/* Typography-driven Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto"
+        >
+          <h1 className="text-4xl sm:text-6xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.12]">
+            Chat with your{" "}
+            <span className="font-serif italic font-normal text-amber-600 dark:text-yellow-200">
+              personal
+            </span>{" "}
+            AI companion
+          </h1>
+
+          <p className="mt-5 text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+            Fast, approachable, and focused on helping you think clearly. Designed with care for curious minds and builders.
+          </p>
+        </motion.div>
+
+        {/* Interactive Chat Preview Panel */}
+        <CallToAction />
+
+        {/* Features ("Why ChatPika?") */}
         <Features />
+
+        {/* Statistics Section */}
         <Stats />
+
+        {/* Footer */}
         <Footer />
-      </div>
+      </main>
     </div>
   );
 }

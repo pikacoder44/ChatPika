@@ -1,55 +1,86 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
+import { Zap, MessageSquare, Shield, Smile } from "lucide-react";
+
+const features = [
+  {
+    icon: Zap,
+    title: "Instant streaming",
+    description:
+      "Get real-time word-by-word streaming responses with sub-second latency powered by Google Gemini.",
+    badge: "Fast",
+  },
+  {
+    icon: Smile,
+    title: "Thoughtful personality",
+    description:
+      "A friendly companion designed with approachable tone, insightful context awareness, and natural communication.",
+    badge: "Friendly",
+  },
+  {
+    icon: MessageSquare,
+    title: "Persistent chat history",
+    description:
+      "Every dialogue is saved cleanly with MongoDB and synchronized instantly across your devices.",
+    badge: "Organized",
+  },
+  {
+    icon: Shield,
+    title: "Privacy first",
+    description:
+      "Authenticated with Clerk and encrypted in transit. Your prompts and chats are yours alone.",
+    badge: "Secure",
+  },
+];
 
 const Features = () => {
   return (
-    <div>
-      <div className="mx-auto md:mt-10 mt-5 flex w-full flex-col items-center justify-center px-2 pb-2 flex-1">
-        <h1 className="mb-6 md:text-4xl text-xl font-black text-center bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-600 bg-clip-text text-transparent dark:from-sky-400 dark:via-indigo-400 dark:to-violet-500">
-          Why ChatPika?
-        </h1>
-
-        <div className="grid w-[80%] auto-rows-min  gap-6 md:grid-cols-4">
-  
-          <div className="group relative overflow-hidden rounded-2xl p-6 flex flex-col border bg-gradient-to-b from-sky-50 to-white dark:from-sky-900/30 dark:to-slate-900/40 shadow-sm hover:shadow-md transition-shadow">
-            <div className="absolute inset-0 bg-gradient-to-tr from-sky-200/30 to-transparent dark:from-sky-300/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <h1 className="text-xl font-bold mb-3 text-slate-900 dark:text-white ">💬 Chat That Feels Alive</h1>
-            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-              Real-time, human-like responses. It’s like texting a friend who actually knows everything.
-            </p>
-          </div>
-
- 
-          <div className="group relative overflow-hidden rounded-2xl p-6 flex flex-col border bg-gradient-to-b from-violet-50 to-white dark:from-violet-900/30 dark:to-slate-900/40 shadow-sm hover:shadow-md transition-shadow">
-            <div className="absolute inset-0 bg-gradient-to-tr from-violet-200/30 to-transparent dark:from-violet-300/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <h1 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">
-              ⚡ Lightning Fast Brainpower
-            </h1>
-            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-              No waiting. Your questions → instant answers. Optimized for speed so you don’t lose your flow.
-            </p>
-          </div>
-
-  
-          <div className="group relative overflow-hidden rounded-2xl p-6 flex flex-col border bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-900/30 dark:to-slate-900/40 shadow-sm hover:shadow-md transition-shadow">
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-200/30 to-transparent dark:from-emerald-300/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <h1 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">
-              🔒 Your Secrets Stay Yours
-            </h1>
-            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-              Conversations stay private and secure — because your thoughts should never become someone else’s data.
-            </p>
-          </div>
-
-          <div className="group relative overflow-hidden rounded-2xl p-6 flex flex-col border bg-gradient-to-b from-fuchsia-50 to-white dark:from-fuchsia-900/30 dark:to-slate-900/40 shadow-sm hover:shadow-md transition-shadow">
-            <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-200/30 to-transparent dark:from-fuchsia-300/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <h1 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">🎨 Minimal, Clean, Yours</h1>
-            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
-              Built with a distraction-free design. Sleek UI, smooth animations, and a dark/light mode that feels at home.
-            </p>
-          </div>
-        </div>
+    <section className="w-full max-w-5xl mx-auto px-4 py-16">
+      <div className="text-left md:text-center max-w-2xl mx-auto mb-12">
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Everything you need in an everyday AI companion
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-zinc-500 dark:text-zinc-400">
+          Crafted to be quiet when you are focused, and capable when you need answers.
+        </p>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        {features.map((feature, idx) => {
+          const Icon = feature.icon;
+          return (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: idx * 0.08 }}
+              className="group rounded-xl p-6 bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 transition-all text-left flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-yellow-300">
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-md font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-white/5">
+                    {feature.badge}
+                  </span>
+                </div>
+
+                <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {feature.description}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 

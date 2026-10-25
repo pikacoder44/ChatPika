@@ -1,64 +1,41 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
+
+const stats = [
+  { value: "2.4M+", label: "Messages streamed", caption: "Word-by-word streaming" },
+  { value: "180K+", label: "Active conversations", caption: "Across web & mobile" },
+  { value: "<120ms", label: "Time to first token", caption: "Gemini Flash optimized" },
+  { value: "99.9%", label: "Uptime guarantee", caption: "Always accessible" },
+];
 
 const Stats = () => {
   return (
-    <div className="w-full flex justify-center items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:py-24 lg:px-8">
-        <h2 className="md:text-3xl text-2xl mt-2 text-center font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-          Our service statistics
-        </h2>
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-4 mt-4">
-          <div className="overflow-hidden cursor-pointer transition-all ease-in-out hover:-translate-y-1 shadow rounded-lg bg-gradient-to-bl from-[#A1C4FD] to-[#C2E9FB] md:bg-zinc-800 md:from-transparent md:to-transparent md:text-white">
-            <div className="px-4 py-5 sm:p-6">
-              <dl>
-                <dt className="text-sm leading-5 font-medium text-zinc-900 truncate md:text-white">
-                  Total free servers
-                </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-black md:text-white">
-                  1.6M
-                </dd>
-              </dl>
+    <section className="w-full max-w-5xl mx-auto px-4 py-12 border-t border-zinc-200/60 dark:border-white/5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+        {stats.map((stat, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3, delay: idx * 0.06 }}
+            className="text-left"
+          >
+            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+              {stat.value}
             </div>
-          </div>
-          <div className="overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow rounded-lg bg-gradient-to-bl from-[#A1C4FD] to-[#C2E9FB] md:bg-zinc-800 md:from-transparent md:to-transparent md:text-white">
-            <div className="px-4 py-5 sm:p-6">
-              <dl>
-                <dt className="text-sm leading-5 font-medium text-zinc-900 truncate md:text-white">
-                  Servers a month
-                </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-black md:text-white">
-                  19.2K
-                </dd>
-              </dl>
+            <div className="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              {stat.label}
             </div>
-          </div>
-          <div className="overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow rounded-lg bg-gradient-to-bl from-[#A1C4FD] to-[#C2E9FB] md:bg-zinc-800 md:from-transparent md:to-transparent md:text-white">
-            <div className="px-4 py-5 sm:p-6">
-              <dl>
-                <dt className="text-sm leading-5 font-medium text-zinc-900 truncate md:text-white">
-                  Servers a week
-                </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-black md:text-white">
-                  4.9K
-                </dd>
-              </dl>
+            <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-500">
+              {stat.caption}
             </div>
-          </div>
-          <div className="overflow-hidden hover:-translate-0.5 cursor-pointer transition-all ease-in-out shadow rounded-lg bg-gradient-to-bl from-[#A1C4FD] to-[#C2E9FB] md:bg-zinc-800 md:from-transparent md:to-transparent md:text-white">
-            <div className="px-4 py-5 sm:p-6">
-              <dl>
-                <dt className="text-sm leading-5 font-medium text-zinc-900 truncate md:text-white">
-                  Total users
-                </dt>
-                <dd className="mt-1 text-3xl leading-9 font-semibold text-black md:text-white">
-                  166.7K
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </div>
+          </motion.div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 
