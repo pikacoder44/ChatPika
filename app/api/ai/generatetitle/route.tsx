@@ -1,15 +1,30 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 import Chat from "@/lib/models/Chat";
 
 export async function POST(req: Request) {
   try {
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { messages, chatId } = await req.json();
-    console.log("Received Messages:", messages);
-    console.log("Received Chat ID:", chatId);
+    if (!chatId) {
+      return NextResponse.json({ error: "Missing chatId" }, { status: 400 });
+    }
 
     await connectDB();
+
+    const existingChat = await Chat.findById(chatId);
+    if (!existingChat) {
+      return NextResponse.json({ error: "Chat not found" }, { status: 404 });
+    }
+    if (existingChat.userId !== user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {

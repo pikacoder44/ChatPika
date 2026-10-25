@@ -1,5 +1,5 @@
-import { useUser, SignInButton, SignUpButton } from "@clerk/nextjs";
-import { Square, SendHorizonal, Lock, X } from "lucide-react";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { Lock, X } from "lucide-react";
 
 type SignInReqProps = {
   onClose?: () => void;

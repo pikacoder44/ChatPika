@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { useRouter } from "next/navigation";
 import { X, Loader } from "lucide-react";
@@ -49,6 +46,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       });
 
       if (response.ok) {
+        onClose();
         router.push(`/chat/${id}`);
       }
     } catch (error) {

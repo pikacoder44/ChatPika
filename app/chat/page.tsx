@@ -9,7 +9,6 @@ import {
   User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { SidebarTrigger, SidebarProvider } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
 import SignInReq from "@/components/SignInReq";
 const ChatPage = () => {
@@ -47,7 +46,7 @@ const ChatPage = () => {
       setIsCreating(false);
     }
   };
-  const { user, isSignedIn } = useUser(); // Clerk State
+  const { isSignedIn } = useUser(); // Clerk State
 
   useEffect(() => {
     const getRecentChats = async () => {
@@ -76,20 +75,8 @@ const ChatPage = () => {
     }
   }, [isSignedIn]);
 
-  const openChat = async (id) => {
-    let response;
-    try {
-      response = await fetch(`/api/chats/${id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      let chat = await response.json();
-      if (response.ok) {
-        router.push(`/chat/${id}`);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
+  const openChat = (id: string) => {
+    router.push(`/chat/${id}`);
   };
 
   return (

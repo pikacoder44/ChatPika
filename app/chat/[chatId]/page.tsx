@@ -1,21 +1,18 @@
 "use client";
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@clerk/nextjs";
-import { useParams, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { mutate } from "swr";
 import { Square, SendHorizonal } from "lucide-react";
-import SignInReq from "@/components/SignInReq";
 export default function Chat() {
   type Message = {
     id: string;
     role: "user" | "assistant";
     content: string;
   };
-  const router = useRouter();
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,17 +21,14 @@ export default function Chat() {
   const [titleGenerated, setTitleGenerated] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastInput, setLastInput] = useState(null);
+  const [lastInput, setLastInput] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  //Detect if a user is logged in (via Clerk).
-  const { user, isSignedIn } = useUser(); // Clerk State
+  // Detect if a user is logged in (via Clerk).
+  const { isSignedIn } = useUser(); // Clerk State
 
   const params = useParams();
   const chatId = params.chatId as string;
-
-  const searchParams = useSearchParams();
-  const prompt = searchParams.get("prompt");
 
   useEffect(() => {
     setMounted(true);
@@ -124,23 +118,6 @@ export default function Chat() {
 
     updateTitle();
   }, [messages, chatId, titleGenerated]);
-
-  // Helper function to create new chat
-  const createNewChat = () => {
-    fetch("/api/chats", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "New Chat" }),
-    })
-      .then((res) => res.json())
-      .then((chat) => {
-        console.log("New chat created:", chat);
-        localStorage.setItem("chatId", chatId);
-      })
-      .catch((error) => {
-        console.error("Error creating chat:", error);
-      });
-  };
 
   const handleChat = async (input?: string) => {
     const text = input ?? message;

@@ -2,7 +2,7 @@ import ReactMarkdown, { Components } from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import TypingIndicator from "./TypingIndicator";
 import { RefreshCw } from "lucide-react";
 

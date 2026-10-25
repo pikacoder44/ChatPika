@@ -47,19 +47,9 @@ export function AppSidebar() {
   const params = useParams();
   const [currentChat, setCurrentChat] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
-  const [receivedChats, setReceivedChats] = useState([]);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const { data: chats, error, isLoading } = useSWR("/api/chats", fetcher);
-  useEffect(() => {
-    if (chats === undefined) {
-      setReceivedChats([]);
-      console.log("Chats are undefined");
-    } else {
-      setReceivedChats(chats);
-      console.log("rec chat length: ", chats.length);
-      console.log("TYPE: ", typeof chats);
-    }
-  }, [chats]);
+  const { data: chats, isLoading } = useSWR("/api/chats", fetcher);
+  const chatList = Array.isArray(chats) ? chats : [];
 
   // Initialize currentChat from URL params
   useEffect(() => {
@@ -198,9 +188,8 @@ export function AppSidebar() {
             <SidebarGroupLabel>Chats</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {receivedChats.length > 0 ? (
-                  Array.isArray(chats) &&
-                  chats?.map((item) => (
+                {chatList.length > 0 ? (
+                  chatList.map((item: any) => (
                     <SidebarMenuItem key={item._id}>
                       <SidebarMenuButton
                         onClick={() => openChat(item._id)}

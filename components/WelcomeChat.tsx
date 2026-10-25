@@ -25,8 +25,12 @@ const WelcomeChat = ({ onPick }: WelcomeChatProps) => {
     <div className="mx-auto flex w-full flex-col justify-center px-2 pb-2 transition-all duration-700 max-w-3xl flex-1">
       <div className="flex flex-col items-center justify-center pb-4 text-center">
     
-        <h1 className=" text-3xl font-bold">Hi {user?.firstName}</h1>
-        <h1 className="mb-6 text-3xl font-bold">What can I help with?</h1>
+        <h1 className="text-3xl font-bold">
+          Hi{user?.firstName ? ` ${user.firstName}` : " there"}
+        </h1>
+        <h2 className="mb-6 text-3xl font-bold text-gray-700 dark:text-gray-200">
+          What can I help with?
+        </h2>
         <div className=" w-full auto-rows-min gap-4 md:grid-cols-3 hidden md:grid">
           <button onClick={() => handlePick(messages[0])}>
             <div className="card bg-indigo-500/10 hover:bg-indigo-500/15 border-indigo-500/10 text-indigo-800 dark:text-indigo-200  cursor-pointer ">
