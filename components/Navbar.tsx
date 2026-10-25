@@ -95,6 +95,10 @@ const Navbar = () => {
   const pathname = usePathname();
   const isChatRoute = pathname?.startsWith("/chat");
 
+  if (isChatRoute) {
+    return null;
+  }
+
   return (
     <header className="w-full z-40 sticky top-0 bg-[#FAF9F6]/85 dark:bg-[#0F1117]/85 backdrop-blur-md border-b border-zinc-200/60 dark:border-white/5 transition-colors">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">

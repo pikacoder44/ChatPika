@@ -1,12 +1,15 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import WorkspaceHeader from "@/components/WorkspaceHeader";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { mutate } from "swr";
-import { Square, SendHorizonal } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function Chat() {
   type Message = {
     id: string;
@@ -18,15 +21,14 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [chatTitle, setChatTitle] = useState("New Chat");
   const [titleGenerated, setTitleGenerated] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastInput, setLastInput] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // Detect if a user is logged in (via Clerk).
-  const { isSignedIn } = useUser(); // Clerk State
-
+  const { isSignedIn } = useUser();
   const params = useParams();
   const chatId = params.chatId as string;
 
@@ -34,12 +36,11 @@ export default function Chat() {
     setMounted(true);
   }, []);
 
-  // Auto-resize textarea as user types (up to a reasonable max)
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "auto";
-    const maxPx = 192; // ~12rem (Tailwind h-48)
+    const maxPx = 160;
     el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
   }, [message]);
 
@@ -47,7 +48,6 @@ export default function Chat() {
     if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
       return crypto.randomUUID();
     }
-    // Fallback: generate UUID manually
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       const r = (crypto.getRandomValues(new Uint8Array(1))[0] % 16) | 0;
       const v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -56,61 +56,62 @@ export default function Chat() {
   }
 
   useEffect(() => {
-    let dbDataLoad = async () => {
-      let response = await fetch(`/api/chats/${chatId}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.status === 401) {
-        console.log("Unauthorized");
-        return;
-      }
-      let chat = await response.json();
-      setMessages(
-        chat.messages.map((msg: any) => ({
-          id: msg._id,
-          role: msg.role,
-          content: msg.content,
-        })),
-      );
-      // If chat already has messages, mark title as generated
-      if (chat.messages.length > 0) {
-        setTitleGenerated(true);
+    const dbDataLoad = async () => {
+      try {
+        const response = await fetch(`/api/chats/${chatId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (response.status === 401) return;
+        if (response.ok) {
+          const chat = await response.json();
+          if (chat) {
+            if (chat.title) setChatTitle(chat.title);
+            if (chat.messages) {
+              setMessages(
+                chat.messages.map((msg: any) => ({
+                  id: msg._id,
+                  role: msg.role,
+                  content: msg.content,
+                }))
+              );
+              if (chat.messages.length > 0) {
+                setTitleGenerated(true);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load chat:", err);
       }
     };
 
-    dbDataLoad();
+    if (chatId) {
+      dbDataLoad();
+    }
   }, [chatId]);
 
   useEffect(() => {
     const updateTitle = async () => {
-      // Only generate title if we have exactly 2 messages and haven't generated it yet
       if (messages.length === 2 && !titleGenerated) {
-        // Check if both messages have content (assistant message is complete)
         const [userMsg, assistantMsg] = messages;
         if (
           userMsg?.content &&
           assistantMsg?.content &&
           assistantMsg.content.trim() !== ""
         ) {
-          setTitleGenerated(true); // Mark as generated immediately to prevent duplicate calls
-
-          let response = await fetch("/api/ai/generatetitle", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: messages, chatId: chatId }),
-          });
-          if (response.status === 429) {
-            alert(
-              "Can't generate title.You have reached the maximum number of requests. Please try again later.",
-            );
-            console.log(
-              "Can't generate title. You have reached the maximum number of requests. Please try again later.",
-            );
-            return;
-          }
-          if (response.ok) {
-            mutate("/api/chats");
+          setTitleGenerated(true);
+          try {
+            const response = await fetch("/api/ai/generatetitle", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ messages, chatId }),
+            });
+            if (response.ok) {
+              mutate("/api/chats");
+            }
+          } catch (e) {
+            console.error("Failed to update title:", e);
           }
         }
       }
@@ -121,7 +122,6 @@ export default function Chat() {
 
   const handleChat = async (input?: string) => {
     const text = input ?? message;
-
     if (!text || typeof text !== "string" || !text.trim()) return;
 
     setLoading(true);
@@ -129,14 +129,13 @@ export default function Chat() {
     setError(null);
     setLastInput(text);
 
-    // Add user message
     const userMessage: Message = {
       id: generateId(),
       role: "user",
       content: text,
     };
     setMessages((prev) => [...prev, userMessage]);
-    setMessage(""); // clear input
+    setMessage("");
 
     try {
       const res = await fetch("/api/ai/chat", {
@@ -149,14 +148,8 @@ export default function Chat() {
       });
 
       if (!res.body) throw new Error("No response body");
-      if (res.status === 503) {
-        setError(
-          "⚠️ Service is temporarily unavailable. Please try again later.",
-        );
-        return;
-      }
       if (!res.ok) {
-        setError(`⚠️ Error ${res.status}: ${res.statusText}`);
+        setError(`Error ${res.status}: ${res.statusText}`);
         return;
       }
 
@@ -184,8 +177,8 @@ export default function Chat() {
           prev.map((msg) =>
             msg.id === assistantId
               ? { ...msg, content: msg.content + chunk }
-              : msg,
-          ),
+              : msg
+          )
         );
       }
     } catch (error: any) {
@@ -204,11 +197,30 @@ export default function Chat() {
     }
   };
 
-  function handleRetry() {
-    if (lastInput) {
-      handleChat(lastInput); // 🔄 directly send last input
+  const handleRetry = () => {
+    if (lastInput) handleChat(lastInput);
+  };
+
+  const handleExport = () => {
+    if (messages.length === 0) {
+      alert("No messages to export.");
+      return;
     }
-  }
+    const markdown = messages
+      .map(
+        (m) =>
+          `### ${m.role === "user" ? "You" : "ChatPika"}\n\n${m.content}\n`
+      )
+      .join("\n---\n\n");
+
+    const blob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${chatTitle.replace(/\s+/g, "_") || "ChatPika"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -218,77 +230,88 @@ export default function Chat() {
   };
 
   return (
-    <div className="relative">
-      <div className="flex flex-col h-svh w-full overflow-x-hidden dark:bg-zinc-900 dark:text-white">
-        <div className="self-stretch ">
-          <div className="fixed -mt-2.5 z-50">
-            <SidebarTrigger className="size-10 rounded-full bg-zinc-900/80 text-white border border-zinc-800 hover:bg-zinc-900 hover:text-white backdrop-blur shadow-lg" />
-          </div>
-        </div>
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      {/* Subtle fine dot grid (visible in dark and light modes) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-grid-pattern opacity-60"
+      />
+
+      {/* Workspace Top Header Bar */}
+      <WorkspaceHeader
+        chatId={chatId}
+        chatTitle={chatTitle}
+        onTitleUpdate={(newTitle) => setChatTitle(newTitle)}
+        onExport={handleExport}
+      />
+
+      {/* Main Conversation Stream */}
+      <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative z-10">
         {messages.length === 0 ? (
-          <WelcomeChat
-            onPick={(m) => {
-              setMessage(m);
-            }}
-          />
+          <WelcomeChat onPick={(m) => setMessage(m)} />
         ) : (
-          <div className="flex w-full justify-center px-2 sm:px-4 min-h-0 min-w-0 overflow-hidden flex-1 ">
-            <ChatWindow
-              messages={messages}
-              streaming={isStreaming}
-              error={error}
-              onRetry={handleRetry}
-            />
-          </div>
-        )}
-        {mounted && (
-          <div className="flex justify-center px-2 sm:px-4 ">
-            <div className="m-2 flex w-full max-w-3xl mb-30 flex-row justify-center items-center rounded-[28px] dark:bg-zinc-700 dark:border-0 border-2 border-zinc-300 min-h-10 dark:text-white shadow-sm p-2 ">
-              <textarea
-                suppressHydrationWarning
-                ref={textareaRef}
-                rows={1}
-                className="w-full  max-h-40 sm:max-h-48 resize-none bg-transparent px-2 py-2 rounded-md focus:outline-none scroll-smooth placeholder-zinc-300"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onInput={() => {
-                  const el = textareaRef.current;
-                  if (!el) return;
-                  el.style.height = "auto";
-                  const maxPx = 192;
-                  el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
-                }}
-                placeholder="Ask me something..."
-              />
-              {loading ? (
-                <button
-                  disabled
-                  className="w-15 h-full flex items-center justify-center"
-                >
-                  <div className="bg-gray-300 p-3 rounded-full animate-pulse">
-                    <Square size={13} fill="black" strokeWidth={0} />
-                  </div>
-                </button>
-              ) : message.length == 0 ? (
-                <button
-                  disabled
-                  className="w-15 h-full flex items-center justify-center cursor-not-allowed text-gray-600 dark:text-gray-900 "
-                >
-                  <SendHorizonal size={25} fill="gray" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleChat(message)}
-                  className="w-15 h-full flex items-center justify-center"
-                >
-                  <SendHorizonal size={25} />
-                </button>
-              )}
-            </div>
-          </div>
+          <ChatWindow
+            messages={messages}
+            streaming={isStreaming}
+            error={error}
+            onRetry={handleRetry}
+          />
         )}
       </div>
+
+      {/* Floating Bottom Input Dock */}
+      {mounted && (
+        <div className="sticky bottom-4 mx-auto max-w-2xl w-full px-4 mb-4 z-20 shrink-0">
+          {/* Subtle Pika is thinking floating status indicator */}
+          <AnimatePresence>
+            {isStreaming && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                className="mb-2 flex items-center gap-1.5 text-xs text-amber-600 dark:text-yellow-300 font-medium px-2"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping" />
+                <span>⚡ Pika is thinking...</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="w-full rounded-2xl bg-white/95 dark:bg-[#151821]/90 backdrop-blur-md border border-zinc-200/80 dark:border-white/10 p-2.5 shadow-xl shadow-zinc-900/5 dark:shadow-2xl flex items-center gap-3 transition-colors duration-200 focus-within:border-yellow-400 dark:focus-within:border-yellow-400/40">
+            <textarea
+              ref={textareaRef}
+              rows={1}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask me something..."
+              className="w-full max-h-36 resize-none bg-transparent border-none text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:ring-0 text-sm focus:outline-none px-2 py-1"
+            />
+
+            {loading ? (
+              <button
+                disabled
+                className="p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center shrink-0 cursor-not-allowed text-zinc-400"
+              >
+                <Square className="w-3.5 h-3.5 fill-current" />
+              </button>
+            ) : (
+              <motion.button
+                whileTap={{ scale: 0.92 }}
+                disabled={!message.trim()}
+                onClick={() => handleChat(message)}
+                className={`p-2.5 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer font-medium ${
+                  message.trim()
+                    ? "bg-yellow-300 hover:bg-yellow-200 text-zinc-950 shadow-sm"
+                    : "bg-zinc-100 dark:bg-white/5 text-zinc-400 dark:text-zinc-600 cursor-not-allowed"
+                }`}
+              >
+                <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+              </motion.button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
