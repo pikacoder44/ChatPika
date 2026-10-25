@@ -48,7 +48,7 @@ const itemVariants = {
     opacity: 1,
     x: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 300,
       damping: 25,
     },
@@ -64,7 +64,9 @@ export function AppSidebar() {
   const [loadingChat, setLoadingChat] = useState<string | null>(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const { data: chats, isLoading } = useSWR("/api/chats", fetcher);
-  const chatList = Array.isArray(chats) ? chats : [];
+  const chatList = Array.isArray(chats)
+    ? chats.filter((item: any) => !Array.isArray(item.messages) || item.messages.length > 0)
+    : [];
 
   useEffect(() => {
     if (params.chatId) {
@@ -86,24 +88,9 @@ export function AppSidebar() {
     }
   };
 
-  const handleNewChat = async () => {
-    try {
-      const chatCount = chats ? chats.length + 1 : 1;
-      const response = await fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: `Chat ${chatCount}` }),
-      });
-
-      if (response.ok) {
-        const chatData = await response.json();
-        router.push(`/chat/${chatData._id}`);
-        setCurrentChat(chatData._id);
-        mutate("/api/chats");
-      }
-    } catch (error) {
-      console.error("Failed to create chat:", error);
-    }
+  const handleNewChat = () => {
+    setCurrentChat(null);
+    router.push("/chat");
   };
 
   return (

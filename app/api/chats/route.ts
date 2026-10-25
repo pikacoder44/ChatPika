@@ -57,7 +57,10 @@ export async function GET() {
       return NextResponse.json([]);
     }
 
-    const chats = await Chat.find({ userId: dbUser.clerkId }).sort({
+    const chats = await Chat.find({
+      userId: dbUser.clerkId,
+      "messages.0": { $exists: true },
+    }).sort({
       createdAt: -1,
     });
 
