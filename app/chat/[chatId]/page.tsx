@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import ChatWindow from "@/components/ChatWindow";
 import WelcomeChat from "@/components/WelcomeChat";
 import WorkspaceHeader from "@/components/WorkspaceHeader";
+import SmoothScroll from "@/components/SmoothScroll";
 import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { mutate } from "swr";
@@ -231,7 +232,7 @@ export default function Chat() {
 
   return (
     <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
-      {/* Subtle fine dot grid (visible in dark and light modes) */}
+      {/* Subtle fine dot grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 bg-grid-pattern opacity-60"
@@ -245,33 +246,44 @@ export default function Chat() {
         onExport={handleExport}
       />
 
-      {/* Main Conversation Stream */}
+      {/* Main Conversation Stream Wrapped in SmoothScroll */}
       <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative z-10">
         {messages.length === 0 ? (
           <WelcomeChat onPick={(m) => setMessage(m)} />
         ) : (
-          <ChatWindow
-            messages={messages}
-            streaming={isStreaming}
-            error={error}
-            onRetry={handleRetry}
-          />
+          <SmoothScroll className="w-full h-full min-h-0 flex-1 overflow-hidden">
+            <ChatWindow
+              messages={messages}
+              streaming={isStreaming}
+              error={error}
+              onRetry={handleRetry}
+            />
+          </SmoothScroll>
         )}
       </div>
 
-      {/* Floating Bottom Input Dock */}
+      {/* Floating Bottom Input Dock with Spring Entrance */}
       {mounted && (
-        <div className="sticky bottom-4 mx-auto max-w-2xl w-full px-4 mb-4 z-20 shrink-0">
-          {/* Subtle Pika is thinking floating status indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className="sticky bottom-4 mx-auto max-w-2xl w-full px-4 mb-4 z-20 shrink-0"
+        >
+          {/* Subtle Pika is thinking floating status indicator with animated pulsing dot */}
           <AnimatePresence>
             {isStreaming && (
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 6 }}
-                className="mb-2 flex items-center gap-1.5 text-xs text-amber-600 dark:text-yellow-300 font-medium px-2"
+                className="mb-2 flex items-center gap-2 text-xs text-amber-600 dark:text-yellow-300 font-medium px-2"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping" />
+                <motion.span
+                  animate={{ scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-2 h-2 rounded-full bg-yellow-400"
+                />
                 <span>⚡ Pika is thinking...</span>
               </motion.div>
             )}
@@ -310,7 +322,7 @@ export default function Chat() {
               </motion.button>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

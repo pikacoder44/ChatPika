@@ -39,18 +39,21 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 15, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
-      duration: 0.35,
-      ease: [0.25, 0.4, 0.25, 1],
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
     },
   },
 };
@@ -69,9 +72,9 @@ const WelcomeChat = ({ onPick }: WelcomeChatProps) => {
     <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 py-8 text-center my-auto">
       {/* Header Greeting */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className="mb-8"
       >
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
@@ -98,10 +101,14 @@ const WelcomeChat = ({ onPick }: WelcomeChatProps) => {
             <motion.button
               key={idx}
               variants={cardVariants}
-              whileHover={{ y: -3, transition: { duration: 0.18 } }}
+              whileHover={{
+                y: -4,
+                scale: 1.01,
+                transition: { type: "spring", stiffness: 300, damping: 25 },
+              }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handlePick(item.prompt)}
-              className="group p-4 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10 hover:border-yellow-300/60 dark:hover:border-yellow-200/40 text-left transition-all cursor-pointer shadow-2xs flex flex-col justify-between"
+              className="group p-4 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10 hover:border-yellow-400/60 dark:hover:border-yellow-200/40 text-left transition-colors cursor-pointer shadow-xs dark:shadow-2xs flex flex-col justify-between"
             >
               <div>
                 <div className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-[#1A1D27] flex items-center justify-center text-zinc-800 dark:text-yellow-300 mb-3 group-hover:scale-105 transition-transform">

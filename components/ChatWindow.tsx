@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import * as ScrollArea from "@radix-ui/react-scroll-area";
 import TypingIndicator from "./TypingIndicator";
 import {
   Copy,
@@ -159,17 +158,11 @@ const ResponseActions = ({ content, onRetry }: MessageActionsProps) => {
 };
 
 const ChatWindow = ({ messages, streaming, error, onRetry }: any) => {
-  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const endRef = useRef<HTMLDivElement | null>(null);
 
+  // Smooth scroll to bottom when a new message or token arrives
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      const viewport = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
-      );
-      if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
-      }
-    }
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, streaming]);
 
   const markdownComponents: Components = {
@@ -251,120 +244,124 @@ const ChatWindow = ({ messages, streaming, error, onRetry }: any) => {
   };
 
   return (
-    <ScrollArea.Root
-      ref={scrollAreaRef}
-      className="w-full h-full min-h-0 flex-1 overflow-hidden bg-transparent"
+    <div
+      data-lenis-prevent
+      className="w-full h-full min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 py-6 scroll-smooth"
     >
-      <ScrollArea.Viewport className="w-full h-full px-4 sm:px-6 py-6">
-        <div className="max-w-3xl w-full mx-auto space-y-6 pb-28">
-          {messages.map((msg: any, index: number) => {
-            const isUser = msg.role === "user";
+      <div className="max-w-3xl w-full mx-auto space-y-6 pb-28">
+        {messages.map((msg: any, index: number) => {
+          const isUser = msg.role === "user";
 
-            if (isUser) {
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex justify-end gap-2.5 items-end my-4"
-                >
-                  <div className="bg-zinc-900 dark:bg-[#232734] border border-zinc-800 dark:border-white/10 text-white dark:text-zinc-100 rounded-2xl rounded-tr-xs px-4 py-2.5 max-w-xl shadow-xs flex items-center gap-2 text-xs sm:text-sm leading-relaxed">
-                    <p className="whitespace-pre-wrap">{msg.content}</p>
-                  </div>
-                  <div className="w-6 h-6 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 flex items-center justify-center text-[10px] font-semibold shrink-0 mb-1">
-                    U
-                  </div>
-                </motion.div>
-              );
-            }
-
+          if (isUser) {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex gap-3 my-6 max-w-3xl w-full"
+                initial={{ opacity: 0, x: 20, y: 10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25,
+                }}
+                className="flex justify-end gap-2.5 items-end my-4"
               >
-                {/* Avatar */}
-                <div className="shrink-0 mt-0.5">
-                  <div className="bg-yellow-100 dark:bg-yellow-300/10 border border-yellow-300/50 dark:border-yellow-300/30 p-1.5 rounded-xl shadow-2xs flex items-center justify-center w-8 h-8">
-                    <PikaMascotIcon className="w-5 h-5" />
-                  </div>
+                <div className="bg-zinc-900 dark:bg-[#232734] border border-zinc-800 dark:border-white/10 text-white dark:text-zinc-100 rounded-2xl rounded-tr-xs px-4 py-2.5 max-w-xl shadow-xs flex items-center gap-2 text-xs sm:text-sm leading-relaxed">
+                  <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
-
-                {/* AI Response Card: pure white in light mode, dark charcoal #151821 in dark mode */}
-                <div className="flex-1 min-w-0 bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 rounded-2xl rounded-tl-xs p-5 shadow-xs transition-colors duration-200 w-full">
-                  <div className="text-xs sm:text-sm">
-                    <ReactMarkdown components={markdownComponents}>
-                      {msg.content}
-                    </ReactMarkdown>
-                  </div>
-
-                  {/* Actions toolbar */}
-                  <ResponseActions
-                    content={msg.content}
-                    onRetry={index === messages.length - 1 ? onRetry : undefined}
-                  />
+                <div className="w-6 h-6 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 flex items-center justify-center text-[10px] font-semibold shrink-0 mb-1">
+                  U
                 </div>
               </motion.div>
             );
-          })}
+          }
 
-          {/* Error Message notice */}
-          {error && (
+          return (
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              key={index}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex gap-3 items-start my-4"
-            >
-              <div className="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20 flex items-center justify-center text-xs shrink-0 font-bold">
-                !
-              </div>
-              <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-300 text-xs sm:text-sm">
-                <p>{error}</p>
-                {onRetry && (
-                  <button
-                    onClick={onRetry}
-                    className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-red-100 dark:bg-red-900/40 hover:bg-red-200 transition-colors cursor-pointer text-red-800 dark:text-red-200"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    <span>Try again</span>
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Typing Indicator */}
-          {streaming && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 25,
+              }}
               className="flex gap-3 my-6 max-w-3xl w-full"
             >
+              {/* Avatar */}
               <div className="shrink-0 mt-0.5">
                 <div className="bg-yellow-100 dark:bg-yellow-300/10 border border-yellow-300/50 dark:border-yellow-300/30 p-1.5 rounded-xl shadow-2xs flex items-center justify-center w-8 h-8">
                   <PikaMascotIcon className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="px-5 py-4 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 rounded-tl-xs shadow-xs transition-colors duration-200">
-                <TypingIndicator />
+              {/* AI Response Card */}
+              <div className="flex-1 min-w-0 bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 rounded-2xl rounded-tl-xs p-5 shadow-xs transition-colors duration-200 w-full">
+                <div className="text-xs sm:text-sm">
+                  <ReactMarkdown components={markdownComponents}>
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+
+                {/* Actions toolbar */}
+                <ResponseActions
+                  content={msg.content}
+                  onRetry={index === messages.length - 1 ? onRetry : undefined}
+                />
               </div>
             </motion.div>
-          )}
-        </div>
-      </ScrollArea.Viewport>
+          );
+        })}
 
-      <ScrollArea.Scrollbar
-        orientation="vertical"
-        className="w-1.5 p-0.5 hover:w-2 transition-all bg-transparent"
-      >
-        <ScrollArea.Thumb className="bg-zinc-300 dark:bg-zinc-700 rounded-full" />
-      </ScrollArea.Scrollbar>
-    </ScrollArea.Root>
+        {/* Error Message notice */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="flex gap-3 items-start my-4"
+          >
+            <div className="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20 flex items-center justify-center text-xs shrink-0 font-bold">
+              !
+            </div>
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-300 text-xs sm:text-sm">
+              <p>{error}</p>
+              {onRetry && (
+                <button
+                  onClick={onRetry}
+                  className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-red-100 dark:bg-red-900/40 hover:bg-red-200 transition-colors cursor-pointer text-red-800 dark:text-red-200"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Try again</span>
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Typing Indicator */}
+        {streaming && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="flex gap-3 my-6 max-w-3xl w-full"
+          >
+            <div className="shrink-0 mt-0.5">
+              <div className="bg-yellow-100 dark:bg-yellow-300/10 border border-yellow-300/50 dark:border-yellow-300/30 p-1.5 rounded-xl shadow-2xs flex items-center justify-center w-8 h-8">
+                <PikaMascotIcon className="w-5 h-5" />
+              </div>
+            </div>
+
+            <div className="px-5 py-4 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 rounded-tl-xs shadow-xs transition-colors duration-200">
+              <TypingIndicator />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Scroll anchor */}
+        <div ref={endRef} />
+      </div>
+    </div>
   );
 };
 
