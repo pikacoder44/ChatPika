@@ -1,22 +1,54 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Plus,
-  MessageSquare,
-  Sparkles,
   ArrowRight,
   Bot,
-  User,
+  Zap,
+  Lock,
+  MessageSquare,
+  Clock,
+  Sparkles,
+  ArrowUpRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
 import SignInReq from "@/components/SignInReq";
-const ChatPage = () => {
+import { PikaMascotIcon } from "@/components/Navbar";
+
+interface ChatItem {
+  _id: string;
+  title: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+function timeAgo(dateString?: string) {
+  if (!dateString) return "Recently";
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return date.toLocaleDateString();
+}
+
+export default function ChatPage() {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [recentChats, setRecentChats] = useState<any[]>([]);
+  const [recentChats, setRecentChats] = useState<ChatItem[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isSignedIn } = useUser();
+
   const handleNewChat = async () => {
     setIsCreating(true);
     try {
@@ -33,7 +65,6 @@ const ChatPage = () => {
 
       if (response.ok) {
         const chat = await response.json();
-
         router.push(`/chat/${chat._id}`);
       } else if (response.status === 401) {
         setShowAuthModal(true);
@@ -46,31 +77,32 @@ const ChatPage = () => {
       setIsCreating(false);
     }
   };
-  const { isSignedIn } = useUser(); // Clerk State
 
   useEffect(() => {
     const getRecentChats = async () => {
       setLoading(true);
       try {
-        let result = await fetch("/api/chats", {
+        const result = await fetch("/api/chats", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
 
-        let data = await result.json();
-
-        setRecentChats(data);
-        console.log("Recent Chats:", data);
+        if (result.ok) {
+          const data = await result.json();
+          if (Array.isArray(data)) {
+            setRecentChats(data);
+          }
+        }
       } catch (error) {
-        console.log("Failed to fetch chats:", error);
+        console.error("Failed to fetch chats:", error);
       } finally {
         setLoading(false);
       }
     };
+
     if (isSignedIn) {
-      console.log("Signed In");
       getRecentChats();
     }
   }, [isSignedIn]);
@@ -80,130 +112,163 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="relative">
-      <div className="bg-linear-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-slate-900 ">
-        {/* Main Content */}
-        <div className="flex flex-col items-center justify-center flex-1 px-6 py-16">
-          <div className="max-w-4xl w-full text-center">
-            {/* Welcome Section */}
-            <div className="mb-12">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
-                <MessageSquare className="h-10 w-10 text-white" />
-              </div>
-              <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-                Welcome to AI Chat
-              </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                Start a conversation with our advanced AI assistant. Ask
-                questions, get creative, or explore new ideas together.
-              </p>
+    <div className="relative w-full min-h-[calc(100vh-4rem)] flex flex-col justify-between bg-[#FAF9F6] dark:bg-[#0F1117] text-zinc-900 dark:text-zinc-100 overflow-x-hidden transition-colors duration-200">
+      {/* Subtle fine dot pattern */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-grid-pattern opacity-60"
+      />
+
+      {/* Main Content Area */}
+      <main className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 py-10 sm:py-14 max-w-4xl mx-auto text-center">
+        {/* Welcome Mascot Avatar Centerpiece */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="flex flex-col items-center"
+        >
+          <div className="relative mb-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-yellow-300 dark:bg-yellow-400/90 shadow-md shadow-yellow-500/10 flex items-center justify-center">
+              <PikaMascotIcon className="w-10 h-10 sm:w-12 sm:h-12" />
             </div>
+            {/* Tiny playful status pip */}
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#FAF9F6] dark:border-[#0F1117] flex items-center justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            </span>
+          </div>
 
-            {/* New Chat Button */}
-            <div className="mb-12">
-              <button
-                onClick={handleNewChat}
-                disabled={isCreating}
-                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isCreating ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Creating Chat...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-6 w-6" />
-                    Start New Chat
-                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-                  </>
-                )}
-              </button>
-            </div>
+          <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 leading-tight">
+            Welcome to{" "}
+            <span className="font-serif italic font-normal text-amber-600 dark:text-yellow-200">
+              ChatPika
+            </span>
+          </h1>
 
-            {/* Quick Start Prompts */}
-            <div className="mb-12 flex flex-col gap-10">
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
-                Recent Chats
-              </h2>
+          <p className="mt-3 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-lg leading-relaxed">
+            Your friendly, lightning-fast AI workspace. Ask questions, brainstorm solutions, or explore new ideas in a distraction-free flow.
+          </p>
 
-              {loading ? (
-                // Spinner when loading
-                <div className="flex justify-center items-center py-20">
-                  <div className="w-10 h-10 border-4 border-gray-100 border-t-purple-800  dark:border-gray-900 dark:border-t-amber-300 rounded-full animate-spin" />
-                </div>
-              ) : recentChats.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                  {recentChats.map((item) => (
-                    <button
-                      key={item._id}
-                      onClick={() => openChat(item._id)}
-                      className="group p-4 text-left bg-white/60 shadow dark:bg-zinc-800/60 backdrop-blur-sm border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-zinc-800 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-8 h-8 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                          <Sparkles className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
-                            {item.title}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+          {/* Primary CTA: Start New Chat */}
+          <div className="mt-7">
+            <motion.button
+              onClick={handleNewChat}
+              disabled={isCreating}
+              whileTap={{ scale: 0.98 }}
+              whileHover={{ y: -2 }}
+              className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-semibold text-zinc-950 bg-yellow-300 hover:bg-yellow-200 shadow-sm transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isCreating ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-zinc-950/30 border-t-zinc-950 rounded-full animate-spin" />
+                  <span>Preparing workspace...</span>
+                </>
               ) : (
-                <h1 className="text-gray-600 p-20">
-                  No Recent Chats, Start a New One
-                </h1>
+                <>
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>Start New Chat</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </>
               )}
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Recent Chats Section */}
+        <div className="w-full mt-12 sm:mt-14">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+              <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Recent conversations
+              </h2>
             </div>
+            {recentChats.length > 0 && (
+              <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                {recentChats.length} {recentChats.length === 1 ? "thread" : "threads"}
+              </span>
+            )}
+          </div>
 
-            {/* Features */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="text-center p-6">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Bot className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                  AI-Powered
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Advanced language model for intelligent conversations
-                </p>
-              </div>
-
-              <div className="text-center p-6">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <MessageSquare className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                  Real-time Chat
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Stream responses for natural conversation flow
-                </p>
-              </div>
-
-              <div className="text-center p-6">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <User className="h-6 w-6 text-green-600 dark:text-green-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                  Personalized
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Save and continue conversations anytime
-                </p>
-              </div>
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="w-6 h-6 border-2 border-zinc-300 border-t-yellow-400 dark:border-zinc-700 dark:border-t-yellow-300 rounded-full animate-spin" />
             </div>
+          ) : recentChats.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {recentChats.slice(0, 6).map((chat) => (
+                <motion.button
+                  key={chat._id}
+                  onClick={() => openChat(chat._id)}
+                  whileHover={{ y: -2 }}
+                  className="group p-3.5 rounded-xl text-left bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 transition-all cursor-pointer flex flex-col justify-between shadow-2xs"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-xs sm:text-sm font-medium text-zinc-800 dark:text-zinc-200 group-hover:text-amber-600 dark:group-hover:text-yellow-200 line-clamp-1 transition-colors">
+                      {chat.title || "Untitled conversation"}
+                    </p>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-200 shrink-0 transition-colors" />
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-[11px] text-zinc-400 dark:text-zinc-500">
+                    <MessageSquare className="w-3 h-3" />
+                    <span>{timeAgo(chat.updatedAt || chat.createdAt)}</span>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 px-4 rounded-xl border border-dashed border-zinc-200 dark:border-white/10 bg-white/40 dark:bg-[#151821]/40 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+              No previous threads found. Tap &ldquo;Start New Chat&rdquo; above to start your first conversation!
+            </div>
+          )}
+        </div>
+
+        {/* Feature Highlights Grid */}
+        <div className="w-full mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 text-left">
+          <div className="p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10">
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-[#1A1D27] flex items-center justify-center text-zinc-800 dark:text-yellow-300 mb-3">
+              <Bot className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+              Neural reasoning
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Google Gemini powered for accurate analysis, writing, and code assistance.
+            </p>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10">
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-[#1A1D27] flex items-center justify-center text-zinc-800 dark:text-yellow-300 mb-3">
+              <Zap className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+              Live token streaming
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Sub-120ms latency delivers responses word-by-word with zero awkward pauses.
+            </p>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151821] border border-zinc-200/80 dark:border-white/10">
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-[#1A1D27] flex items-center justify-center text-zinc-800 dark:text-yellow-300 mb-3">
+              <Lock className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+              Private & encrypted
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Authenticated securely via Clerk. Your prompts remain strictly private.
+            </p>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* Minimalist Seamless Footer matching exact background */}
+      <footer className="w-full py-4 px-4 text-center text-xs text-zinc-400 dark:text-zinc-600 border-t border-zinc-200/40 dark:border-white/5 bg-[#FAF9F6] dark:bg-[#0F1117]">
+        <span>ChatPika • Clean & quiet AI companion</span>
+      </footer>
+
       {showAuthModal && <SignInReq onClose={() => setShowAuthModal(false)} />}
     </div>
   );
-};
-
-export default ChatPage;
+}
