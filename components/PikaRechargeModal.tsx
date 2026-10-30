@@ -116,56 +116,78 @@ export default function PikaRechargeModal({
                 <p className="text-sm text-zinc-300 max-w-xs">{celebration}</p>
               </motion.div>
             ) : (
-              /* Out-of-Credits Content */
+              /* Modal Content - Conditionally adapted based on credit balance */
               <div className="flex flex-col items-center text-center">
-                {/* Cute Animated Sleeping Mascot State */}
-                <div className="relative inline-flex items-center justify-center mb-1 mt-2">
-                  <motion.div
-                    animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3,
-                      ease: "easeInOut",
-                    }}
-                    className="text-4xl mb-2 select-none relative"
-                  >
-                    😴⚡
-                  </motion.div>
+                {creditsRemaining <= 0 && !isPro ? (
+                  /* Out of Credits: Cute Animated Sleeping Mascot State */
+                  <div className="relative inline-flex items-center justify-center mb-1 mt-2">
+                    <motion.div
+                      animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 3,
+                        ease: "easeInOut",
+                      }}
+                      className="text-4xl mb-2 select-none relative"
+                    >
+                      😴⚡
+                    </motion.div>
 
-                  {/* Floating "Zzz" micro-animations floating gently upward */}
-                  <div className="absolute -top-3 -right-6 w-8 h-8 pointer-events-none select-none">
-                    {["z", "Z", "Z"].map((letter, i) => (
-                      <motion.span
-                        key={i}
-                        initial={{ opacity: 0, y: 4, x: 0, scale: 0.6 }}
-                        animate={{
-                          opacity: [0, 0.9, 0],
-                          y: [-2, -24 - i * 6],
-                          x: [0, 6 + i * 4],
-                          scale: [0.6, 1, 1.15],
-                        }}
-                        transition={{
-                          duration: 2.2,
-                          repeat: Infinity,
-                          delay: i * 0.7,
-                          ease: "easeOut",
-                        }}
-                        className="absolute font-bold text-yellow-300/80 font-mono text-xs"
-                        style={{ top: `${i * 2}px`, left: `${i * 3}px` }}
-                      >
-                        {letter}
-                      </motion.span>
-                    ))}
+                    {/* Floating "Zzz" micro-animations floating gently upward */}
+                    <div className="absolute -top-3 -right-6 w-8 h-8 pointer-events-none select-none">
+                      {["z", "Z", "Z"].map((letter, i) => (
+                        <motion.span
+                          key={i}
+                          initial={{ opacity: 0, y: 4, x: 0, scale: 0.6 }}
+                          animate={{
+                            opacity: [0, 0.9, 0],
+                            y: [-2, -24 - i * 6],
+                            x: [0, 6 + i * 4],
+                            scale: [0.6, 1, 1.15],
+                          }}
+                          transition={{
+                            duration: 2.2,
+                            repeat: Infinity,
+                            delay: i * 0.7,
+                            ease: "easeOut",
+                          }}
+                          className="absolute font-bold text-yellow-300/80 font-mono text-xs"
+                          style={{ top: `${i * 2}px`, left: `${i * 3}px` }}
+                        >
+                          {letter}
+                        </motion.span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* Active Credits: Cheerful Energetic Mascot State */
+                  <div className="relative inline-flex items-center justify-center mb-1 mt-2">
+                    <motion.div
+                      animate={{ y: [0, -3, 0], scale: [1, 1.04, 1] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
+                      className="text-4xl mb-2 select-none relative"
+                    >
+                      ⚡✨
+                    </motion.div>
+                  </div>
+                )}
 
-                {/* Modal Title & Description */}
+                {/* Modal Title & Description - Dynamically reflects user intent */}
                 <h3 className="text-xl font-bold tracking-tight text-zinc-100">
-                  Pika is out of energy!
+                  {creditsRemaining <= 0 && !isPro
+                    ? "Pika is out of energy!"
+                    : "Recharge Pika Energy ⚡"}
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-400 mt-2 max-w-xs leading-relaxed">
-                  Your daily free allowance is exhausted. Pika needs a quick power
-                  nap to recharge his lightning pouch.
+                  {creditsRemaining <= 0 && !isPro
+                    ? "Your daily free allowance is exhausted. Pika needs a quick power nap to recharge his lightning pouch."
+                    : `You currently have ${
+                        isPro ? "Unlimited" : `${creditsRemaining} Energy`
+                      } remaining. Top up your balance or upgrade to Pro for unrestricted streaming.`}
                 </p>
 
                 {/* 00:00 UTC Auto-refresh badge */}

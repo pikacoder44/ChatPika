@@ -7,7 +7,7 @@ import WorkspaceHeader from "@/components/WorkspaceHeader";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useRouter } from "next/navigation";
 import { mutate } from "swr";
-import { ArrowUp, Square, Zap } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCredits } from "@/hooks/useCredits";
 import PikaRechargeModal from "@/components/PikaRechargeModal";
@@ -36,6 +36,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   const { isSignedIn } = useUser();
   const {
     selectedModel,
+    setSelectedModel,
     canAfford,
     deductCredits,
     refundCredits,
@@ -44,6 +45,8 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     creditsRemaining,
     isPro,
   } = useCredits();
+
+  const [showModelMenu, setShowModelMenu] = useState(false);
 
   // Ref to track if we just created a chat locally to prevent dbDataLoad from clearing optimistic messages
   const skipNextFetchRef = useRef(false);
@@ -405,19 +408,96 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
               className="w-full max-h-36 resize-none bg-transparent border-none text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:ring-0 text-sm focus:outline-none px-2 py-1"
             />
 
-            {/* Energy Cost Pill inside input dock */}
-            <motion.button
-              whileTap={{ scale: 0.92 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={openRechargeModal}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-300 text-xs font-medium transition-all shrink-0 cursor-pointer"
-              title={`Model cost: ${getModelCost(selectedModel)}⚡ (${selectedModel === "pro" ? "Pika Pro" : "Pika Fast"}). Click to recharge.`}
-            >
-              <Zap className="w-3 h-3 text-yellow-500 dark:text-yellow-300 fill-yellow-500 dark:fill-yellow-300" />
-              <span className="text-[11px] font-mono font-bold">
-                {isPro ? "Pro" : `${creditsRemaining}⚡`}
-              </span>
-            </motion.button>
+            {/* Interactive Model Selector Badge with Pop-over */}
+            <div className="relative shrink-0">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowModelMenu((prev) => !prev)}
+                className="text-xs font-medium px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 dark:hover:bg-white/10 border border-zinc-200 dark:border-white/10 transition-colors cursor-pointer flex items-center gap-1 select-none shrink-0 text-zinc-700 dark:text-zinc-300"
+                title="Click to switch AI model"
+              >
+                <span>⚡</span>
+                <span>{selectedModel === "pro" ? "Pro (2⚡)" : "Fast (1⚡)"}</span>
+              </motion.button>
+
+              {/* Compact Pop-over Menu */}
+              <AnimatePresence>
+                {showModelMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-30"
+                      onClick={() => setShowModelMenu(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                      className="absolute right-0 bottom-full mb-2 w-52 rounded-xl bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 shadow-xl p-1.5 z-40 text-xs"
+                    >
+                      {/* Option 1: Pika Fast */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedModel("fast");
+                          setShowModelMenu(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-colors cursor-pointer ${
+                          selectedModel === "fast"
+                            ? "bg-yellow-400/15 text-zinc-950 dark:text-yellow-200 font-semibold"
+                            : "hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300"
+                        }`}
+                      >
+                        <div>
+                          <div className="font-semibold text-xs flex items-center gap-1">
+                            <span>Pika Fast</span>
+                            {selectedModel === "fast" && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                            )}
+                          </div>
+                          <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-normal mt-0.5">
+                            Standard speed • 1⚡/msg
+                          </p>
+                        </div>
+                        <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-white/10 text-yellow-600 dark:text-yellow-300 font-bold">
+                          1⚡
+                        </span>
+                      </button>
+
+                      {/* Option 2: Pika Pro */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedModel("pro");
+                          setShowModelMenu(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-colors cursor-pointer mt-0.5 ${
+                          selectedModel === "pro"
+                            ? "bg-yellow-400/15 text-zinc-950 dark:text-yellow-200 font-semibold"
+                            : "hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300"
+                        }`}
+                      >
+                        <div>
+                          <div className="font-semibold text-xs flex items-center gap-1">
+                            <span>Pika Pro</span>
+                            {selectedModel === "pro" && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                            )}
+                          </div>
+                          <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-normal mt-0.5">
+                            Deep reasoning • 2⚡/msg
+                          </p>
+                        </div>
+                        <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-white/10 text-amber-600 dark:text-yellow-300 font-bold">
+                          2⚡
+                        </span>
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
 
             {loading ? (
               <button
