@@ -7,8 +7,10 @@ import WorkspaceHeader from "@/components/WorkspaceHeader";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useRouter } from "next/navigation";
 import { mutate } from "swr";
-import { ArrowUp, Square } from "lucide-react";
+import { ArrowUp, Square, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCredits } from "@/hooks/useCredits";
+import PikaRechargeModal from "@/components/PikaRechargeModal";
 
 export default function ChatView({ initialChatId }: { initialChatId?: string | null }) {
   type Message = {
@@ -32,6 +34,16 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { isSignedIn } = useUser();
+  const {
+    selectedModel,
+    canAfford,
+    deductCredits,
+    refundCredits,
+    openRechargeModal,
+    getModelCost,
+    creditsRemaining,
+    isPro,
+  } = useCredits();
 
   // Ref to track if we just created a chat locally to prevent dbDataLoad from clearing optimistic messages
   const skipNextFetchRef = useRef(false);
@@ -166,12 +178,26 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
     const text = input ?? message;
     if (!text || typeof text !== "string" || !text.trim()) return;
 
+    const cost = getModelCost(selectedModel);
+
+    // 1. Verify creditsRemaining > 0 before calling AI endpoint
+    if (!canAfford(selectedModel)) {
+      openRechargeModal();
+      return;
+    }
+
+    // 2. Optimistically deduct the required credit amount
+    const deducted = deductCredits(selectedModel);
+    if (!deducted) {
+      return;
+    }
+
     setLoading(true);
     setIsStreaming(true);
     setError(null);
     setLastInput(text);
 
-    // 1. Optimistic UI update: Immediately append user message & clear input
+    // 3. Optimistic UI update: Immediately append user message & clear input
     const userMessage: Message = {
       id: generateId(),
       role: "user",
@@ -209,11 +235,13 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
         body: JSON.stringify({
           message: text,
           chatId: isSignedIn && currentId ? currentId : undefined,
+          model: selectedModel,
         }),
       });
 
       if (!res.body) throw new Error("No response body");
       if (!res.ok) {
+        refundCredits(cost);
         setError(`Error ${res.status}: ${res.statusText}`);
         return;
       }
@@ -249,6 +277,7 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
       }
     } catch (error: any) {
       console.error(error);
+      refundCredits(cost);
       setMessages((prev) => [
         ...prev,
         {
@@ -376,6 +405,20 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
               className="w-full max-h-36 resize-none bg-transparent border-none text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:ring-0 text-sm focus:outline-none px-2 py-1"
             />
 
+            {/* Energy Cost Pill inside input dock */}
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={openRechargeModal}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/80 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-300 text-xs font-medium transition-all shrink-0 cursor-pointer"
+              title={`Model cost: ${getModelCost(selectedModel)}⚡ (${selectedModel === "pro" ? "Pika Pro" : "Pika Fast"}). Click to recharge.`}
+            >
+              <Zap className="w-3 h-3 text-yellow-500 dark:text-yellow-300 fill-yellow-500 dark:fill-yellow-300" />
+              <span className="text-[11px] font-mono font-bold">
+                {isPro ? "Pro" : `${creditsRemaining}⚡`}
+              </span>
+            </motion.button>
+
             {loading ? (
               <button
                 disabled
@@ -400,6 +443,9 @@ export default function ChatView({ initialChatId }: { initialChatId?: string | n
           </div>
         </motion.div>
       )}
+
+      {/* Out-of-Credits Recharge Modal with sleeping mascot animation */}
+      <PikaRechargeModal />
     </div>
   );
 }

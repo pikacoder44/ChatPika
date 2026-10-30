@@ -3,6 +3,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import { shadcn } from "@clerk/themes";
+import { CreditsProvider } from "@/hooks/useCredits";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }}
     >
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {children}
+        <CreditsProvider>{children}</CreditsProvider>
       </ThemeProvider>
     </ClerkProvider>
   );

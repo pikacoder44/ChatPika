@@ -10,8 +10,12 @@ import {
   Pencil,
   Check,
   Zap,
+  ChevronDown,
+  Sparkles,
 } from "lucide-react";
 import { mutate } from "swr";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCredits } from "@/hooks/useCredits";
 
 interface WorkspaceHeaderProps {
   chatId?: string;
@@ -26,6 +30,16 @@ export default function WorkspaceHeader({
   onTitleUpdate,
   onExport,
 }: WorkspaceHeaderProps) {
+  const {
+    selectedModel,
+    setSelectedModel,
+    creditsRemaining,
+    maxCredits,
+    isPro,
+    openRechargeModal,
+  } = useCredits();
+
+  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(chatTitle);
 
@@ -100,16 +114,117 @@ export default function WorkspaceHeader({
           )}
         </div>
 
-        {/* Model Badge */}
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white dark:bg-[#1A1D27] border border-zinc-200/80 dark:border-white/10 text-zinc-700 dark:text-zinc-300 shrink-0 shadow-2xs">
-          <Zap className="w-3 h-3 text-amber-500 dark:text-yellow-300 fill-amber-500 dark:fill-yellow-300" />
-          <span>Pika Fast</span>
-          <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">• Gemini 2.5</span>
+        {/* Interactive Model Selector Pill with Spring Physics */}
+        <div className="relative">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsModelMenuOpen((prev) => !prev)}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white dark:bg-[#1A1D27] border border-zinc-200/80 dark:border-white/10 text-zinc-700 dark:text-zinc-300 shrink-0 shadow-2xs hover:border-yellow-400 dark:hover:border-yellow-400/50 transition-all cursor-pointer"
+            title="Switch model tier"
+          >
+            <Zap className="w-3 h-3 text-amber-500 dark:text-yellow-300 fill-amber-500 dark:fill-yellow-300" />
+            <span>{selectedModel === "pro" ? "Pika Pro" : "Pika Fast"}</span>
+            <span className="text-[10px] text-amber-600 dark:text-yellow-300/90 font-mono font-bold">
+              • {selectedModel === "pro" ? "2⚡" : "1⚡"}
+            </span>
+            <ChevronDown
+              className={`w-3 h-3 text-zinc-400 transition-transform duration-150 ${
+                isModelMenuOpen ? "rotate-180" : ""
+              }`}
+            />
+          </motion.button>
+
+          {/* Model Switcher Popover */}
+          <AnimatePresence>
+            {isModelMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-30"
+                  onClick={() => setIsModelMenuOpen(false)}
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  className="absolute left-0 mt-2 w-56 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200 dark:border-white/10 shadow-xl p-1.5 z-40 text-xs"
+                >
+                  <div className="px-2.5 py-1.5 text-[10px] uppercase font-bold tracking-wider text-zinc-400">
+                    Select Model Tier
+                  </div>
+
+                  {/* Option 1: Pika Fast (1 credit) */}
+                  <button
+                    onClick={() => {
+                      setSelectedModel("fast");
+                      setIsModelMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors cursor-pointer text-left ${
+                      selectedModel === "fast"
+                        ? "bg-yellow-400/10 text-zinc-900 dark:text-yellow-200 font-medium"
+                        : "hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-600 dark:text-zinc-300"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold flex items-center gap-1.5">
+                        <Zap className="w-3 h-3 text-yellow-500" />
+                        <span>Pika Fast</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400 mt-0.5">
+                        Everyday quick chats
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-white/10 text-yellow-600 dark:text-yellow-300 font-bold">
+                      1⚡
+                    </span>
+                  </button>
+
+                  {/* Option 2: Pika Pro (2 credits) */}
+                  <button
+                    onClick={() => {
+                      setSelectedModel("pro");
+                      setIsModelMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors cursor-pointer text-left mt-1 ${
+                      selectedModel === "pro"
+                        ? "bg-yellow-400/10 text-zinc-900 dark:text-yellow-200 font-medium"
+                        : "hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-600 dark:text-zinc-300"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3 text-amber-400" />
+                        <span>Pika Pro</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400 mt-0.5">
+                        Deeper reasoning & detail
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/50 dark:bg-white/10 text-amber-600 dark:text-yellow-300 font-bold">
+                      2⚡
+                    </span>
+                  </button>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Quick Energy Pill */}
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={openRechargeModal}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 text-zinc-900 dark:text-yellow-300 text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
+          title="Pika Energy (Click to recharge)"
+        >
+          <span className="text-yellow-500 dark:text-yellow-300">⚡</span>
+          <span>{isPro ? "Unlimited" : `${creditsRemaining}/${maxCredits}`}</span>
+        </motion.button>
+
         <ThemeToggle />
 
         {/* Export / Copy Thread */}

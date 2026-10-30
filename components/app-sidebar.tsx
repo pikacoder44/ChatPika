@@ -20,6 +20,8 @@ import SearchModal from "./SearchModal";
 import { useUser, UserButton } from "@clerk/nextjs";
 import { PikaMascotIcon } from "./Navbar";
 import { motion } from "framer-motion";
+import PikaEnergyWidget from "./PikaEnergyWidget";
+import PikaRechargeModal from "./PikaRechargeModal";
 
 const fetcher = (...args: [RequestInfo, RequestInit?]) =>
   fetch(...args).then((res) => res.json());
@@ -242,8 +244,11 @@ export function AppSidebar() {
         </SidebarContent>
 
         {/* Bottom Profile Footer */}
-        <SidebarFooter className="p-3 border-t border-zinc-200 dark:border-white/10 bg-white dark:bg-[#12141D] transition-colors duration-200">
-          <div className="flex items-center justify-between px-1 py-1">
+        <SidebarFooter className="p-2 border-t border-zinc-200 dark:border-white/10 bg-white dark:bg-[#12141D] transition-colors duration-200 flex flex-col gap-1">
+          {/* Animated Pika Energy Credit Widget */}
+          <PikaEnergyWidget />
+
+          <div className="flex items-center justify-between px-2 py-1">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="[&_.cl-userButtonTrigger]:!h-7 [&_.cl-userButtonTrigger]:!w-7 [&_.cl-userButtonAvatarBox]:!h-7 [&_.cl-userButtonAvatarBox]:!w-7">
                 <UserButton />
@@ -259,7 +264,7 @@ export function AppSidebar() {
             </div>
 
             <button
-              className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors"
+              className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
               title="Settings"
             >
               <Settings className="w-3.5 h-3.5" />
@@ -271,6 +276,9 @@ export function AppSidebar() {
       {isSearchModalOpen && (
         <SearchModal onClose={() => setIsSearchModalOpen(false)} />
       )}
+
+      {/* Out of credits recharge modal */}
+      <PikaRechargeModal />
     </>
   );
 }

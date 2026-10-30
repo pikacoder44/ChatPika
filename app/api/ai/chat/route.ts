@@ -5,8 +5,8 @@ import Chat from "@/lib/models/Chat";
 
 export async function POST(req: Request) {
   try {
-    // 1. Extract chatId along with the message from the request body
-    const { message, chatId } = await req.json();
+    // 1. Extract chatId and model along with the message from the request body
+    const { message, chatId, model: requestedModel } = await req.json();
 
     if (!message || !chatId) {
       return new Response(
@@ -47,9 +47,10 @@ export async function POST(req: Request) {
     }
 
     // 2. Start Gemini stream
+    const targetModel = requestedModel === "pro" ? "models/gemini-2.5-pro" : "models/gemini-2.5-flash";
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "models/gemini-2.5-flash",
+      model: targetModel,
     });
 
     const stream = await model.generateContentStream({
